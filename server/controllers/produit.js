@@ -1,11 +1,9 @@
 const Produit = require("../models/produit");
-const path = require('path');
 const upload = require('../middleware/multer');
 const multer = require('multer');
-
+const path = require('path');
 
 const addProduit = (req, res) => {
-  // Utilisation de multer pour gérer l'upload du fichier (image)
   upload.single('image')(req, res, (err) => {
     if (err instanceof multer.MulterError) {
       return res.status(400).json({ error: 'Erreur de téléchargement de fichier', message: err.message });
@@ -13,110 +11,85 @@ const addProduit = (req, res) => {
       return res.status(500).json({ error: 'Erreur de serveur', message: err.message });
     }
 
-    // Récupérer le chemin de l'image téléchargée
-    const imagePath = req.file ? req.file.path : '';
+    // Conserver seulement le chemin relatif à partir du dossier "uploads"
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : ''; 
 
-    // Création du produit avec les informations reçues et le chemin de l'image
     const produit = new Produit({
       nom: req.body.nom,
       description: req.body.description,
       prix: req.body.prix,
-      categorie: req.body.categorie,
-      image: imagePath,  // Le chemin de l'image est sauvegardé dans la base de données
+      image: imagePath,  // Stocker le chemin relatif
       quantite: req.body.quantite
     });
 
-    // Sauvegarde du produit dans la base de données
     produit.save()
-      .then(() => {
-        res.status(201).json({
-          produit: produit,
-          message: 'Produit ajouté avec succès !'
-        });
-      })
-      .catch(error => {
-        res.status(400).json({ error: error.message, message: 'Données invalides !' });
-      });
+      .then(() => res.status(201).json({ produit, message: 'Produit ajouté avec succès !' }))
+      .catch(error => res.status(400).json({ error: error.message, message: 'Données invalides !' }));
   });
 };
 
+// Récupération de tous les produits
 const getProduit = (req, res) => {
   Produit.find()
-    .then((produit) =>
-      res.status(200).json({
-        Produits: produit,
-        message: "success!",
-      })
-    )
-
-    .catch(() => {
-      res.status(400).json({
-        error: Error.message,
-        message: "probleme d'extraction des livres ! ",
-      });
-    });
+    .then(produits => res.status(200).json({ produits, message: "Produits récupérés avec succès !" }))
+    .catch(error => res.status(400).json({ error: error.message, message: "Problème de récupération des produits !" }));
 };
 
+// Récupération d'un produit par ID
 const fetchProduit = (req, res) => {
-  Produit.findOne({ _id: req.params.id })
-    .then((produit) => {
+  Produit.findById(req.params.id)
+    .then(produit => {
       if (!produit) {
-        res.status(404).json({
-          message: "produit non trouvé!",
-        });
-      } else {
-        res.status(200).json({
-          produit: produit,
-          message: "produit trouvé!",
-        });
+        return res.status(404).json({ message: "Produit non trouvé !" });
       }
+      res.status(200).json({ produit, message: "Produit récupéré avec succès !" });
     })
-    .catch(() => {
-      res.status(400).json({
-        error: Error.message,
-        message: "Données invalides!",
-      });
-    });
+    .catch(error => res.status(400).json({ error: error.message, message: "Données invalides !" }));
 };
 
-
+// Mise à jour d'un produit
 const updateProduit = (req, res) => {
-  Produit.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
-    .then((produit) => {
-      if (!produit) {
-        res.status(404).json({
-          message: "produit non trouvé!",
-        });
-      } else {
-        res.status(200).json({
-          produit: produit,
-          message: "produit modifié!",
-        });
-      }
-    })
-    .catch(() => {
-      res.status(400).json({
-        error: Error.message,
-        message: "Données invalides!",
-      });
-    });
+  upload.single('image')(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: 'Erreur de téléchargement de fichier', message: err.message });
+    } else if (err) {
+      return res.status(500).json({ error: 'Erreur de serveur', message: err.message });
+    }
+
+    const updateData = {
+      nom: req.body.nom,
+      description: req.body.description,
+      prix: req.body.prix,
+      categorie: req.body.categorie,
+      quantite: req.body.quantite,
+    };
+
+    if (req.file) {
+      updateData.image = path.normalize(req.file.path); // Mettre à jour le chemin de l'image
+    }
+
+    Produit.findByIdAndUpdate(req.params.id, updateData, { new: true })
+      .then(produit => {
+        if (!produit) {
+          return res.status(404).json({ message: "Produit non trouvé !" });
+        }
+        res.status(200).json({ produit, message: "Produit mis à jour avec succès !" });
+      })
+      .catch(error => res.status(400).json({ error: error.message, message: "Données invalides !" }));
+  });
 };
 
+// Suppression d'un produit
 const deleteProduit = (req, res) => {
-    Produit.deleteOne({ _id: req.params.id })
-      .then((produits) =>
-        res.status(200).json({
-          message: "success!",
-        })
-      )
-  
-      .catch(() => {
-        res.status(400).json({
-          error: Error.message,
-          message: "probleme d'extraction ",
-        });
-      });
-  };
+  Produit.findByIdAndDelete(req.params.id)
+    .then(produit => {
+      if (!produit) {
+        return res.status(404).json({ message: "Produit non trouvé !" });
+      }
+      res.status(200).json({ message: "Produit supprimé avec succès !" });
+    })
+    .catch(error => res.status(400).json({ error: error.message, message: "Problème lors de la suppression du produit !" }));
+};
 
 module.exports = {
   getProduit,

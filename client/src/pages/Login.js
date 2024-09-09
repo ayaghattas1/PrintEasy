@@ -48,7 +48,7 @@ export default function Login() {
 
       if (response.status === 200) {
         localStorage.setItem('authToken', response.data.token);
-        navigate('/home');
+        navigate('/dashboard');
       } else {
         setError(response.data.message || 'Login failed');
       }

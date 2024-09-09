@@ -1,22 +1,32 @@
 const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const crypto = require('crypto');
 const path = require('path');
 
-// Configure Multer storage with a custom directory and filename
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // Define the directory where files should be saved (adjust this path)
-    const uploadPath = path.join(__dirname, 'uploads');
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    // Create a unique filename with a timestamp
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const newFilename = `${file.fieldname}-${uniqueSuffix}-${file.originalname}`;
-    cb(null, newFilename);
+// URI pour MongoDB
+const mongoDBUri = 'mongodb://127.0.0.1:27017/PrintEasy';
+
+// Configuration de multer-gridfs-storage
+const storage = new GridFsStorage({
+  url: mongoDBUri,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'uploads' // Le bucket utilisé pour stocker les fichiers dans GridFS
+        };
+        resolve(fileInfo);
+      });
+    });
   }
 });
 
-// Create the Multer instance with the specified storage
-const upload = multer({ storage: storage });
+// Instance de multer avec GridFS
+const upload = multer({ storage });
 
 module.exports = upload;
