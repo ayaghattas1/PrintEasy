@@ -128,28 +128,19 @@ exports.getUser = (req, res) => {
   };
 
   exports.updateUserPhoto = async (req, res, next) => {
-    // Use Multer's single-file upload method
     upload.single('photo')(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
-        // Handle Multer-specific errors
         return res.status(400).json({ error: 'File upload error', message: err.message });
       } else if (err) {
-        // Handle other errors
         return res.status(500).json({ error: 'File upload error', message: err.message });
       }
-      console.log('Uploaded file details:', req.file);  // Log file details
-
-      // Retrieve the authenticated user ID from the request (ensure authentication middleware is used)
-      // const userId = req.auth.userId;
+      console.log('Uploaded file details:', req.file);
   
-      // Retrieve the uploaded photo path or use the existing photo if none was uploaded
-      const photoPath = req.file ? path.join('uploads', req.file.filename) : req.auth.photo;
-      console.log('Constructed photo path:', photoPath);  // Log the photo path
-
-      // Update the user's profile photo path in the database
+      const photoPath = req.file ? req.file.filename.replace(/\\/g, '/') : req.auth.photo;
+      console.log('Constructed photo path:', photoPath);
+  
       try {
         const userId = req.auth.userId;
-
         const updatedUser = await User.findByIdAndUpdate(userId, { photo: photoPath }, { new: true });
         if (!updatedUser) {
           return res.status(404).json({ error: 'User not found', userId });
@@ -161,6 +152,7 @@ exports.getUser = (req, res) => {
       }
     });
   };
+  
 
   exports.fetchUser = (req, res) => {
     User.findOne({ _id: req.params.id })
@@ -215,6 +207,21 @@ exports.commandesUser = async (req, res) => {
           message: "Problème lors de l'extraction des Commandes de l'utilisateur.",
           error: error.message
       });
+  }
+};
+
+exports.getUserData = async (req, res) => {
+  try {
+    const userId = req.auth.userId; // L'ID de l'utilisateur est extrait du middleware
+    if (!userId) return res.status(401).json({ message: 'Utilisateur non autorisé' });
+
+    const user = await User.findById(userId).select('-password'); // Récupère l'utilisateur sans le mot de passe
+    if (!user) return res.status(404).json({ message: 'Utilisateur non trouvé' });
+
+    res.json(user);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des données utilisateur:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 

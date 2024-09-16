@@ -29,13 +29,13 @@ const impressionSchema = mongoose.Schema({
     date_maximale: { type: Date, required: false },
     livraison: { 
         type: String,
-        enum: ["Livraison", "Sur place"],
+        enum: ["Livraison +4DT", "Sur place"],
     },
     prixunitaire: { type: Number },
     prixfinal: { type: Number },
     etat: { 
         type: String, 
-        enum: ["En cours de confirmation", "Confirmé", "En cours de préparation", "Prêt"],
+        enum: ["En cours de confirmation", "Confirmé", "Délivré", "Prêt", "Annulé"],
         default: "En cours de confirmation"
     },
     owner: {

@@ -13,11 +13,47 @@ conn.once('open', () => {
   gfs.collection('uploads');
 });
 
-// Récupération de tous les produits
-const getImpression = (req, res) => {
-  Impression.find()
-    .then(impressions => res.status(200).json({ impressions, message: "impressions récupérés avec succès !" }))
-    .catch(error => res.status(400).json({ error: error.message, message: "Problème de récupération des impression !" }));
+
+const getImpressions = async (req, res) => {
+  try {
+    const { etat } = req.query; // Récupérer le paramètre 'etat' de la requête
+
+    // Construire le filtre
+    const filter = {};
+    if (etat) {
+      filter.etat = etat;
+    }
+
+    const impressions = await Impression.find(filter) // Appliquer le filtre
+      .populate('owner', 'photo')  // Assurez-vous que 'owner' est référencé correctement
+      .exec();
+
+    res.json(impressions);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la récupération des impressions.' });
+  }
+};
+
+
+
+const getMesImpressions = (req, res) => {
+  // Extraire l'ID de l'utilisateur connecté depuis le token
+  const userId = req.auth.userId; 
+
+  // Filtrer les impressions où 'owner' correspond à l'utilisateur connecté
+  Impression.find({ owner: userId })
+    .then(impressions => {
+      res.status(200).json({
+        impressions,
+        message: "Impressions récupérées avec succès !"
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        error: error.message,
+        message: "Problème de récupération des impressions !"
+      });
+    });
 };
 
 const addImpression = async (req, res) => {
@@ -81,9 +117,42 @@ const deleteImpression = (req, res) => {
     .catch(error => res.status(400).json({ error: error.message, message: "Problème lors de la suppression !" }));
 };
 
+const updateImpression = (req, res) => {
+  const updateData = {
+    description: req.body.description,
+    taille: req.body.taille,
+    couleur: req.body.couleur,
+    typeImpr: req.body.typeImpr,
+    nbPages: req.body.nbPages,
+    nbFois: req.body.nbFois,
+    livraison: req.body.livraison,
+    prixunitaire: req.body.prixunitaire,
+    prixfinal: req.body.prixfinal,
+    date_maximale: req.body.date_maximale,
+  };
+
+  if (req.file) {
+    updateData.file = req.file.filename;
+  }
+
+  Impression.findByIdAndUpdate(req.params.id, updateData, { new: true })
+    .then((impression) => {
+      if (!impression) {
+        return res.status(404).json({ message: "Impression non trouvée !" });
+      }
+      res.status(200).json({ impression, message: "Impression mise à jour avec succès !" });
+    })
+    .catch((error) =>
+      res.status(500).json({ error: error.message, message: "Erreur lors de la mise à jour !" })
+    );
+};
+
+
 module.exports = {
-  getImpression,
+  getImpressions,
   addImpression,
   fetchImpression,
   deleteImpression,
+  getMesImpressions,
+  updateImpression,
 };

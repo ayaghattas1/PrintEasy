@@ -7,6 +7,10 @@ import Dashboard from './pages/Dashboard';
 import Signup from './pages/Signup';
 import Produits from './pages/Produits'; 
 import Impressions from './pages/Impressions';   
+import Profile from './pages/Profile';   
+import Commandes from './pages/Commandes';
+import AdminDash from './pages/AdminDash';
+
 
 
 // Layout component with Header and Sidebar
@@ -34,6 +38,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
         <Route path="/dashboard" element={
             <Layout>
               <Dashboard />
@@ -48,6 +53,7 @@ function App() {
             </Layout>
           } 
         />
+
         <Route 
           path="/impressions" 
           element={
@@ -56,6 +62,33 @@ function App() {
             </Layout>
           } 
         />
+        
+        <Route 
+          path="/Profile" 
+          element={
+            <Layout>
+              <Profile />
+            </Layout>
+          } 
+        />
+
+        <Route 
+          path="/commandes" 
+          element={
+            <Layout>
+              <Commandes />
+            </Layout>
+          } 
+        />
+                <Route 
+          path="/AdminDash" 
+          element={
+            <Layout>
+              <AdminDash />
+            </Layout>
+          } 
+        />
+
       </Routes>
     </Router>
   );

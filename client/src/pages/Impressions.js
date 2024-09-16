@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Grid, Paper } from '@mui/material';
 import { MDBFile } from 'mdb-react-ui-kit';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Impressions = () => {
   const [description, setDescription] = useState('');
@@ -10,18 +13,19 @@ const Impressions = () => {
   const [typeImpr, setTypeImpr] = useState('Laser');
   const [nbPages, setNbPages] = useState('');
   const [nbFois, setNbFois] = useState('');
-  const [files, setFiles] = useState(null);  // Accepter plusieurs fichiers
+  const [files, setFiles] = useState(null);
   const [dateMaximale, setDateMaximale] = useState('');
   const [livraison, setLivraison] = useState('');
   const [prixUnitaire, setPrixUnitaire] = useState(0);
   const [prixFinal, setPrixFinal] = useState(0);
   const [prixConfirme, setPrixConfirme] = useState(false);
 
-  // Fonction pour calculer les prix
+  const navigate = useNavigate();
+
   const calculatePrices = () => {
     const totalPages = parseInt(nbPages) * parseInt(nbFois);
     let unitPrice = 0;
-
+  
     if (couleur === 'Couleurs' && typeImpr === 'Laser') {
       unitPrice = totalPages < 50 ? 100 : 70;
     } else if (couleur === 'Couleurs' && typeImpr === 'Impression Normale') {
@@ -31,24 +35,34 @@ const Impressions = () => {
     } else if (couleur === 'Noir/Blanc' && typeImpr === 'Impression Normale') {
       unitPrice = totalPages < 50 ? 50 : 35;
     }
-
+  
+    let prixFinal = unitPrice * totalPages;
+  
+    console.log("Livraison sélectionnée:", livraison); // Pour voir la valeur
+    if (livraison === 'Livraison +4DT') {
+      console.log("Ajout de 4 DT pour la livraison");
+      prixFinal += 4000; // Ajout de 4 DT au prix final
+    }
+  
+    console.log("Prix final calculé:", prixFinal); // Pour voir le prix final calculé
+  
     setPrixUnitaire(unitPrice);
-    setPrixFinal(unitPrice * totalPages);
-    setPrixConfirme(true);  // Activer la section de livraison après confirmation du prix
+    setPrixFinal(prixFinal);
+    setPrixConfirme(true);
   };
 
-  // Fonction pour soumettre la commande
   const handleSubmit = async (event) => {
     event.preventDefault();
-  // Vérification si le token est bien récupéré depuis localStorage
-  const token = localStorage.getItem('token');
-  console.log('Token récupéré:', token);  // Si cela n'affiche rien, le problème vient de la récupération du token
+    
+    const token = localStorage.getItem('authToken');
 
-  if (!token) {
-    console.error('Token non trouvé !');
-    alert('Erreur : Vous devez être connecté pour passer cette commande.');
-    return;  // Stoppe l'exécution si le token n'est pas trouvé
-  }
+    if (!token) {
+      toast.error('Erreur : Vous devez être connecté pour passer cette commande.', {
+        position: 'top-right',
+      });
+      return;
+    }
+    
     const formData = new FormData();
     formData.append('description', description);
     formData.append('taille', taille);
@@ -57,7 +71,7 @@ const Impressions = () => {
     formData.append('nbPages', nbPages);
     formData.append('nbFois', nbFois);
     if (files) {
-      formData.append('file', files);  // Ajoute un seul fichier
+      formData.append('file', files);  
     }
     formData.append('date_maximale', dateMaximale);
     formData.append('livraison', livraison);
@@ -68,22 +82,33 @@ const Impressions = () => {
       const response = await axios.post('http://localhost:5000/impression/add', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`  // Assure-toi que l'en-tête Authorization est correct
+          'Authorization': `Bearer ${token}`,
         },
       });
-      console.log('Response:', response.data);
-      alert('Impression ajoutée avec succès');
+  
+      if (response.status === 200 || response.status === 201) {
+        toast.success('Votre commande a été bien envoyée !', {
+          position: 'top-right',
+        });
+        
+        setTimeout(() => {
+          navigate('/commandes');
+        }, 3000);
+      } else {
+        toast.error('Une erreur est survenue lors de l\'envoi de la commande.', {
+          position: 'top-right',
+        });
+      }
     } catch (error) {
-      console.error('Erreur lors de l\'ajout de l\'impression:', error.response ? error.response.data : error.message);
-      alert('Erreur lors de l\'ajout de l\'impression');
+      toast.error(`Erreur: ${error.response ? error.response.data : error.message}`, {
+        position: 'top-right',
+      });
     }
   };
-  
-  
 
   return (
     <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
-      <Grid item xs={12} md={8} lg={6}>
+<Grid item xs={12} md={8} lg={6}>
         <Paper elevation={3} style={{ padding: '20px', backgroundColor: '#333', color: '#fff' }}>
           <Typography variant="h4" gutterBottom style={{ marginBottom: '20px' }}>
             Ajouter une Impression
@@ -156,12 +181,12 @@ const Impressions = () => {
               onChange={(e) => setNbFois(e.target.value)}
               style={{ backgroundColor: '#fff', color: '#000' }}
             />
-<MDBFile
-  label="Ajouter un Fichier"
-  id="customFile"
-  onChange={(e) => setFiles(e.target.files[0])}  // Accepte un seul fichier
-  style={{ marginTop: '16px' }}
-/>
+            <MDBFile
+              label="Ajouter un Fichier"
+              id="customFile"
+              onChange={(e) => setFiles(e.target.files[0])}  // Accepte un seul fichier
+              style={{ marginTop: '16px' }}
+            />
             <TextField
               label="Date Maximale"
               type="date"
@@ -173,11 +198,7 @@ const Impressions = () => {
               onChange={(e) => setDateMaximale(e.target.value)}
               style={{ backgroundColor: '#fff', color: '#000' }}
             />
-
-            {/* Afficher les prix après confirmation */}
-            {prixConfirme ? (
-              <>
-                <FormControl variant="outlined" fullWidth margin="normal">
+              <FormControl variant="outlined" fullWidth margin="normal">
                   <InputLabel>Livraison</InputLabel>
                   <Select
                     value={livraison}
@@ -185,16 +206,19 @@ const Impressions = () => {
                     label="Livraison"
                     style={{ backgroundColor: '#fff', color: '#000' }}
                   >
-                    <MenuItem value="Livraison">Livraison</MenuItem>
+                    <MenuItem value="Livraison +4DT">Livraison +4DT</MenuItem>
                     <MenuItem value="Sur place">Sur place</MenuItem>
                   </Select>
                 </FormControl>
 
+            {/* Afficher les prix après confirmation */}
+            {prixConfirme ? (
+              <>
                 <Typography variant="h6" style={{ marginTop: '20px' }}>
-                  Prix Unitaire: {prixUnitaire}€
+                  Prix Unitaire: {prixUnitaire}DT
                 </Typography>
                 <Typography variant="h6">
-                  Prix Final: {prixFinal}€
+                  Prix Final: {prixFinal}DT
                 </Typography>
                 <Button
                   type="submit"
@@ -216,6 +240,8 @@ const Impressions = () => {
           </form>
         </Paper>
       </Grid>
+
+      <ToastContainer />  {/* Composant pour afficher les notifications */}
     </Grid>
   );
 };

@@ -5,10 +5,12 @@ const mongoose = require("mongoose");
 const userRouter=require("./routes/user")
 const impressionRouter=require("./routes/impression")
 const produitRouter=require("./routes/produit")
-const adminRouter=require("./routes/admin")
 const Grid = require("gridfs-stream");
 const cors = require('cors');
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  credentials: true,  
+}));
 app.use(express.json());
 app.use(express.static('uploads'));
 app.use((req, res, next) => {
@@ -57,7 +59,6 @@ conn.once('open', () => {
 app.use("/user", userRouter)
  app.use("/impression", impressionRouter)
 app.use("/produit", produitRouter)
-app.use("/admin", adminRouter)
 const path = require('path');
 
 app.use('/uploads', express.static(path.join(__dirname, 'middleware', 'uploads')));

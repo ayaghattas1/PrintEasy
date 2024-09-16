@@ -7,7 +7,11 @@ const userSchema =  mongoose.Schema({
     firstname : {type: String},
     phone : {type: String},
     address : {type: String},
-
+    role : { 
+      type: String, 
+      enum: ["User", "Admin"],
+      default: "User"
+  },
     photo:{type: String,  required: false},
     commandes: [{
         type: mongoose.Types.ObjectId,

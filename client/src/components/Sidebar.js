@@ -1,19 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   BsCart3, BsGrid1X2Fill, BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, 
   BsListCheck, BsMenuButtonWideFill, BsFillGearFill
 } from 'react-icons/bs';
+import { TbLogout2 } from "react-icons/tb";
 
 function Sidebar({ openSidebarToggle, OpenSidebar }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Effacer les données d'authentification (par exemple, le token)
+    localStorage.removeItem('token');
+    // Rediriger vers la page de connexion ou la page d'accueil
+    navigate('/');
+  };
+
   return (
     <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive" : ""}>
-        <div className='sidebar-title'>
-            <div className='sidebar-brand'>
-                <BsCart3 className='icon_header'/> Panier
-            </div>
-            <span className='icon close_icon' onClick={OpenSidebar}>X</span>
-        </div>
 
         <ul className='sidebar-list'>
             <li className='sidebar-list-item'>
@@ -21,6 +25,12 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
                     <BsGrid1X2Fill className='icon'/> Accueil
                 </Link>
             </li>
+            <li className='sidebar-list-item'>
+                <Link to="/commandes">
+                <BsCart3 className='icon_header'/> Mes Commandes
+                </Link>
+            </li>
+
             <li className='sidebar-list-item'>
                 <Link to="/produits">
                     <BsFillArchiveFill className='icon'/> Produits
@@ -50,6 +60,11 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
                 <Link to="/settings">
                     <BsFillGearFill className='icon'/> Setting
                 </Link>
+            </li>
+            <li className='sidebar-list-item'>
+                <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
+                    <TbLogout2 className='icon'/> Logout
+                </span>
             </li>
         </ul>
     </aside>

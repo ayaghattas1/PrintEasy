@@ -11,6 +11,7 @@ import { BsFillArchiveFill } from 'react-icons/bs';
 import axios from 'axios';  // Pour faire les requêtes HTTP
 import '../App.css';
 
+
 function Dashboard() {
     const [produits, setProduits] = useState([]);
 
