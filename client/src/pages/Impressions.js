@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Grid, Paper } from '@mui/material';
+import { Button, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Grid } from '@mui/material';
 import { MDBFile } from 'mdb-react-ui-kit';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -38,13 +38,13 @@ const Impressions = () => {
   
     let prixFinal = unitPrice * totalPages;
   
-    console.log("Livraison sélectionnée:", livraison); // Pour voir la valeur
+    console.log("Livraison sélectionnée:", livraison); 
     if (livraison === 'Livraison +4DT') {
       console.log("Ajout de 4 DT pour la livraison");
-      prixFinal += 4000; // Ajout de 4 DT au prix final
+      prixFinal += 4000; 
     }
   
-    console.log("Prix final calculé:", prixFinal); // Pour voir le prix final calculé
+    console.log("Prix final calculé:", prixFinal); 
   
     setPrixUnitaire(unitPrice);
     setPrixFinal(prixFinal);
@@ -107,142 +107,170 @@ const Impressions = () => {
   };
 
   return (
-    <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
-<Grid item xs={12} md={8} lg={6}>
-        <Paper elevation={3} style={{ padding: '20px', backgroundColor: '#333', color: '#fff' }}>
-          <Typography variant="h4" gutterBottom style={{ marginBottom: '20px' }}>
-            Ajouter une Impression
-          </Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              label="Description"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              style={{ backgroundColor: '#fff', color: '#000' }}
-            />
-            <FormControl variant="outlined" fullWidth margin="normal">
-              <InputLabel>Taille</InputLabel>
-              <Select
-                value={taille}
-                onChange={(e) => setTaille(e.target.value)}
-                label="Taille"
-                style={{ backgroundColor: '#fff', color: '#000' }}
-              >
-                <MenuItem value="A4">A4</MenuItem>
-                <MenuItem value="A3">A3</MenuItem>
-                <MenuItem value="A2">A2</MenuItem>
-                <MenuItem value="A1">A1</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl variant="outlined" fullWidth margin="normal">
-              <InputLabel>Couleur</InputLabel>
-              <Select
-                value={couleur}
-                onChange={(e) => setCouleur(e.target.value)}
-                label="Couleur"
-                style={{ backgroundColor: '#fff', color: '#000' }}
-              >
-                <MenuItem value="Noir/Blanc">Noir/Blanc</MenuItem>
-                <MenuItem value="Couleurs">Couleurs</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl variant="outlined" fullWidth margin="normal">
-              <InputLabel>Type d'Impression</InputLabel>
-              <Select
-                value={typeImpr}
-                onChange={(e) => setTypeImpr(e.target.value)}
-                label="Type d'Impression"
-                style={{ backgroundColor: '#fff', color: '#000' }}
-              >
-                <MenuItem value="Laser">Laser</MenuItem>
-                <MenuItem value="Impression Normale">Impression Normale</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              label="Nombre de Pages"
-              type="number"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={nbPages}
-              onChange={(e) => setNbPages(e.target.value)}
-              style={{ backgroundColor: '#fff', color: '#000' }}
-            />
-            <TextField
-              label="Nombre de Fois"
-              type="number"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={nbFois}
-              onChange={(e) => setNbFois(e.target.value)}
-              style={{ backgroundColor: '#fff', color: '#000' }}
-            />
-            <MDBFile
-              label="Ajouter un Fichier"
-              id="customFile"
-              onChange={(e) => setFiles(e.target.files[0])}  // Accepte un seul fichier
-              style={{ marginTop: '16px' }}
-            />
-            <TextField
-              label="Date Maximale"
-              type="date"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              InputLabelProps={{ shrink: true }}
-              value={dateMaximale}
-              onChange={(e) => setDateMaximale(e.target.value)}
-              style={{ backgroundColor: '#fff', color: '#000' }}
-            />
-              <FormControl variant="outlined" fullWidth margin="normal">
-                  <InputLabel>Livraison</InputLabel>
-                  <Select
-                    value={livraison}
-                    onChange={(e) => setLivraison(e.target.value)}
-                    label="Livraison"
-                    style={{ backgroundColor: '#fff', color: '#000' }}
-                  >
-                    <MenuItem value="Livraison +4DT">Livraison +4DT</MenuItem>
-                    <MenuItem value="Sur place">Sur place</MenuItem>
-                  </Select>
-                </FormControl>
+<Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+  <Grid item xs={12} md={8} lg={6}>
+    <div style={{ padding: '20px', backgroundColor: 'transparent' }}>
+      <Typography variant="h4" gutterBottom style={{ marginBottom: '20px', color: '#b0bec5' }}>
+        Ajouter une Impression
+      </Typography>
+      <form onSubmit={handleSubmit}>
 
-            {/* Afficher les prix après confirmation */}
-            {prixConfirme ? (
-              <>
-                <Typography variant="h6" style={{ marginTop: '20px' }}>
-                  Prix Unitaire: {prixUnitaire}DT
-                </Typography>
-                <Typography variant="h6">
-                  Prix Final: {prixFinal}DT
-                </Typography>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  style={{ marginTop: '16px', backgroundColor: '#4caf50', color: '#fff' }}
-                >
-                  Accepter la Commande
-                </Button>
-              </>
-            ) : (
-              <Button
-                variant="contained"
-                onClick={calculatePrices}
-                style={{ marginTop: '16px', backgroundColor: '#1976d2', color: '#fff' }}
-              >
-                Confirmer le Prix
-              </Button>
-            )}
-          </form>
-        </Paper>
-      </Grid>
+        <TextField
+          label="Description"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          InputLabelProps={{ style: { color: '#e0e0e0' } }}
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' },
+            notchedOutline: { borderColor: '#80cbc4' },
+          }}
+        />
+        
+        <FormControl variant="outlined" fullWidth margin="normal">
+          <InputLabel style={{ color: '#e0e0e0' }}>Taille</InputLabel>
+          <Select
+            value={taille}
+            onChange={(e) => setTaille(e.target.value)}
+            label="Taille"
+            style={{ backgroundColor: '#424242', color: '#e0e0e0' }}
+            MenuProps={{ PaperProps: { style: { backgroundColor: '#424242', color: '#e0e0e0' } } }}
+          >
+            <MenuItem value="A4">A4</MenuItem>
+            <MenuItem value="A3">A3</MenuItem>
+            <MenuItem value="A2">A2</MenuItem>
+            <MenuItem value="A1">A1</MenuItem>
+          </Select>
+        </FormControl>
+        
+        <FormControl variant="outlined" fullWidth margin="normal">
+          <InputLabel style={{ color: '#e0e0e0' }}>Couleur</InputLabel>
+          <Select
+            value={couleur}
+            onChange={(e) => setCouleur(e.target.value)}
+            label="Couleur"
+            style={{ backgroundColor: '#424242', color: '#e0e0e0' }}
+            MenuProps={{ PaperProps: { style: { backgroundColor: '#424242', color: '#e0e0e0' } } }}
+          >
+            <MenuItem value="Noir/Blanc">Noir/Blanc</MenuItem>
+            <MenuItem value="Couleurs">Couleurs</MenuItem>
+          </Select>
+        </FormControl>
 
-      <ToastContainer />  {/* Composant pour afficher les notifications */}
-    </Grid>
+        <FormControl variant="outlined" fullWidth margin="normal">
+          <InputLabel style={{ color: '#e0e0e0' }}>Type d'Impression</InputLabel>
+          <Select
+            value={typeImpr}
+            onChange={(e) => setTypeImpr(e.target.value)}
+            label="Type d'Impression"
+            style={{ backgroundColor: '#424242', color: '#e0e0e0' }}
+            MenuProps={{ PaperProps: { style: { backgroundColor: '#424242', color: '#e0e0e0' } } }}
+          >
+            <MenuItem value="Laser">Laser</MenuItem>
+            <MenuItem value="Impression Normale">Impression Normale</MenuItem>
+          </Select>
+        </FormControl>
+
+        <TextField
+          label="Nombre de Pages"
+          type="number"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={nbPages}
+          onChange={(e) => setNbPages(e.target.value)}
+          InputLabelProps={{ style: { color: '#e0e0e0' } }}
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' },
+            notchedOutline: { borderColor: '#80cbc4' },
+          }}
+        />
+        
+        <TextField
+          label="Nombre de Fois"
+          type="number"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={nbFois}
+          onChange={(e) => setNbFois(e.target.value)}
+          InputLabelProps={{ style: { color: '#e0e0e0' } }}
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' },
+            notchedOutline: { borderColor: '#80cbc4' },
+          }}
+        />
+        
+        <MDBFile
+          label="Ajouter un Fichier"
+          id="customFile"
+          onChange={(e) => setFiles(e.target.files[0])} // Accepte un seul fichier
+          style={{ marginTop: '16px', color: '#e0e0e0' }}
+        />
+        
+        <TextField
+          label="Date Maximale"
+          type="date"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          InputLabelProps={{ shrink: true, style: { color: '#e0e0e0' } }}
+          value={dateMaximale}
+          onChange={(e) => setDateMaximale(e.target.value)}
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' },
+            notchedOutline: { borderColor: '#80cbc4' },
+          }}
+        />
+
+        <FormControl variant="outlined" fullWidth margin="normal">
+          <InputLabel style={{ color: '#e0e0e0' }}>Livraison</InputLabel>
+          <Select
+            value={livraison}
+            onChange={(e) => setLivraison(e.target.value)}
+            label="Livraison"
+            style={{ backgroundColor: '#424242', color: '#e0e0e0' }}
+            MenuProps={{ PaperProps: { style: { backgroundColor: '#424242', color: '#e0e0e0' } } }}
+          >
+            <MenuItem value="Livraison +4DT">Livraison +4DT</MenuItem>
+            <MenuItem value="Sur place">Sur place</MenuItem>
+          </Select>
+        </FormControl>
+
+        {prixConfirme ? (
+          <>
+            <Typography variant="h6" style={{ marginTop: '20px', color: '#80cbc4' }}>
+              Prix Unitaire: {prixUnitaire}DT
+            </Typography>
+            <Typography variant="h6" style={{ color: '#80cbc4' }}>
+              Prix Final: {prixFinal}DT
+            </Typography>
+            <Button
+              type="submit"
+              variant="contained"
+              style={{ marginTop: '16px', backgroundColor: '#42a5f5', color: '#fff' }}
+            >
+              Accepter la Commande
+            </Button>
+          </>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={calculatePrices}
+            style={{ marginTop: '16px', backgroundColor: '#42a5f5', color: '#fff' }}
+          >
+            Confirmer le Prix
+          </Button>
+        )}
+      </form>
+    </div>
+  </Grid>
+  <ToastContainer />
+</Grid>
+
+
   );
 };
 

@@ -20,7 +20,7 @@ const FileIcon = ({ fileName }) => {
       icon = <FaFileImage />;
       break;
     default:
-      icon = <FaFilePdf />;  // Default icon for unknown file types
+      icon = <FaFilePdf />;  
   }
 
   return (

@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -21,10 +19,27 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError] = useState('');
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    let valid = true;
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError('Adresse email invalide');
+      valid = false;
+    } else {
+      setEmailError('');
+    }
+
+    return valid;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!validateForm()) return;
 
     try {
       const response = await axios.post('http://localhost:5000/user/login', {
@@ -33,10 +48,9 @@ export default function Login() {
       });
 
       if (response.status === 200) {
-        // Stocker le token dans localStorage
+
         localStorage.setItem('authToken', response.data.token);
 
-        // Rediriger vers le tableau de bord
         navigate('/dashboard');
       } else {
         setError(response.data.message || 'Échec de la connexion');
@@ -63,7 +77,7 @@ export default function Login() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Login
+            Connexion
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -77,6 +91,8 @@ export default function Login() {
               autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              error={!!emailError}
+              helperText={emailError}
             />
             <TextField
               margin="normal"
@@ -89,10 +105,8 @@ export default function Login() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Se souvenir de moi"
+              error={!!passwordError}
+              helperText={passwordError}
             />
             <Button
               type="submit"
@@ -105,7 +119,7 @@ export default function Login() {
             {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/forgotPassword" variant="body2">
                   Mot de passe oublié ?
                 </Link>
               </Grid>

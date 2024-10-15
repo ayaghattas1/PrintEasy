@@ -1,4 +1,5 @@
 const Impression = require("../models/impression");
+const User = require("../models/user");
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const mongoDBUri = 'mongodb://127.0.0.1:27017/PrintEasy';
@@ -60,14 +61,14 @@ const addImpression = async (req, res) => {
   try {
     const userId = req.auth.userId;
 
-    // Créez une nouvelle impression en incluant le nom du fichier stocké dans GridFS
+    // Create a new impression with the uploaded file's name in GridFS
     const newImpression = new Impression({
       description: req.body.description || '',
       taille: req.body.taille,
       couleur: req.body.couleur,
       typeImpr: req.body.typeImpr,
       nbPages: req.body.nbPages,
-      file: req.file.filename, // Nom du fichier dans GridFS
+      file: req.file.filename, // File name stored in GridFS
       date_maximale: req.body.date_maximale,
       livraison: req.body.livraison,
       prixunitaire: req.body.prixunitaire,
@@ -76,8 +77,22 @@ const addImpression = async (req, res) => {
       owner: userId,
     });
 
-    // Enregistrement dans la base de données
+    // Save to the database
     const savedImpression = await newImpression.save();
+
+    // Find all admin users to notify
+    const admins = await User.find({ role: 'Admin' });
+    const notificationMessage = `L'utilisateur ${req.auth.firstname} ${req.auth.lastname} a ajouté une impression avec la date limite de ${req.body.date_maximale}`;
+
+    // Add notification for each admin
+    const adminNotifications = admins.map(admin => {
+      admin.notifications.push({
+        message: notificationMessage,
+      });
+      return admin.save();
+    });
+
+    await Promise.all(adminNotifications);
 
     return res.status(201).json({
       success: true,
@@ -94,9 +109,11 @@ const addImpression = async (req, res) => {
   }
 };
 
+
 // Récupération d'un produit par ID
 const fetchImpression = (req, res) => {
   Impression.findById(req.params.id)
+  .populate('owner', 'firstname lastname email phone address photo')
     .then(impression => {
       if (!impression) {
         return res.status(404).json({ message: "impression non trouvé !" });
@@ -129,6 +146,7 @@ const updateImpression = (req, res) => {
     prixunitaire: req.body.prixunitaire,
     prixfinal: req.body.prixfinal,
     date_maximale: req.body.date_maximale,
+    etat: req.body.etat,
   };
 
   if (req.file) {
@@ -147,6 +165,35 @@ const updateImpression = (req, res) => {
     );
 };
 
+// Controller function
+const getImpressionStats = async (req, res) => {
+  try {
+    // Get statistics for different statuses
+    const stats = await Impression.aggregate([
+      {
+        $group: {
+          _id: "$etat",
+          count: { $sum: 1 },
+          totalPrice: { $sum: "$prixfinal" }
+        }
+      }
+    ]);
+
+    // Calculate total revenue for "Délivré"
+    const deliveredStats = stats.find(stat => stat._id === 'Délivré') || { totalPrice: 0 };
+
+    // Respond with the statistics and total revenue
+    res.json({
+      stats,
+      totalRevenue: deliveredStats.totalPrice
+    });
+  } catch (error) {
+    console.error('Error fetching impression stats:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 
 module.exports = {
   getImpressions,
@@ -155,4 +202,5 @@ module.exports = {
   deleteImpression,
   getMesImpressions,
   updateImpression,
+  getImpressionStats,
 };

@@ -13,17 +13,18 @@ const userSchema =  mongoose.Schema({
       default: "User"
   },
     photo:{type: String,  required: false},
-    commandes: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Commande',
-        required: false
-    }],
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
+
     notifications: [
         {
           message: { type: String, required: true },
           date: { type: Date, default: Date.now },
           read: { type: Boolean, default: false },
         }
-      ],})
+      ],
+  })
+
+    
 
 module.exports = mongoose.model("User", userSchema)

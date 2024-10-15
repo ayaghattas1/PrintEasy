@@ -4,10 +4,10 @@ const produitController = require("../controllers/produit");
 const auth=require('../middleware/auth')
 
 
-router.get("/fetchProd/:id", produitController.fetchProduit);
+router.get("/fetchProd/:id",auth.loggedMiddleware, produitController.fetchProduit);
 router.get("/getProd", produitController.getProduit);
-router.post('/add', produitController.addProduit);
+router.post('/add',auth.loggedMiddleware, auth.isAdmin, produitController.addProduit);
 router.patch("/updateProd/:id",auth.loggedMiddleware, produitController.updateProduit);
-router.delete("/deleteProd/:id", produitController.deleteProduit);
+router.delete("/deleteProd/:id",auth.loggedMiddleware, produitController.deleteProduit);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextField, Typography, Paper, Grid, Avatar } from '@mui/material';
+import { Button, TextField, Typography, Grid, Avatar } from '@mui/material';
 import axios from 'axios';
 
 const Profile = () => {
@@ -57,7 +57,7 @@ const Profile = () => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       setPhotoFile(selectedFile);
-      setImageUrl(URL.createObjectURL(selectedFile)); // Local preview
+      setImageUrl(URL.createObjectURL(selectedFile)); 
     }
   };
 
@@ -85,7 +85,7 @@ const Profile = () => {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('photo', photoFile);
-
+  
       const token = localStorage.getItem('authToken');
       const response = await axios.patch('http://localhost:5000/user/updatePhoto', formDataToSend, {
         headers: {
@@ -93,98 +93,132 @@ const Profile = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      if (response.status === 200) {
-        const newPhotoUrl = `http://localhost:5000/uploads/${response.data.photo.replace(/\\/g, '/')}`;
-        setImageUrl(newPhotoUrl);
-        setFormData({ ...formData, photo: response.data.photo });
+  
+      console.log('Server response:', response.data); 
+  
+      if (response.status === 200 && response.data.user && response.data.user.photo) {
+        const newPhotoUrl = `http://localhost:5000/uploads/${response.data.user.photo.replace(/\\/g, '/')}`;
+        setImageUrl(`${newPhotoUrl}?t=${new Date().getTime()}`); 
+        setFormData({ ...formData, photo: response.data.user.photo });
         alert('Photo updated successfully');
       } else {
-        alert('Failed to update photo.');
+        alert('Failed to update photo. Photo field is missing in the response.');
       }
     } catch (error) {
       console.error("Photo upload error:", error);
       alert('An error occurred during photo upload.');
     }
   };
-
+  
   return (
     <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
-      <Grid item xs={12} md={8} lg={6}>
-        <Paper elevation={3} style={{ padding: '20px' }}>
-          <Typography variant="h4" gutterBottom>
-            Mon Profil
-          </Typography>
-          <form onSubmit={handleUpdatePhoto}>
-            <Avatar
-              src={imageUrl}
-              alt="Profile Photo"
-              style={{ width: '100px', height: '100px', marginBottom: '20px' }}
-            />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              style={{ marginBottom: '20px' }}
-            />
-            <Button type="submit" variant="contained" color="secondary">
-              Changer
-            </Button>
-          </form>
-          <form onSubmit={handleUpdateUser}>
-            <TextField
-              label="Email"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              InputProps={{ readOnly: true }}
-            />
-            <TextField
-              label="Last Name"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              name="Nom"
-              value={formData.lastname}
-              onChange={handleChange}
-            />
-            <TextField
-              label="First Name"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              name="Prénom"
-              value={formData.firstname}
-              onChange={handleChange}
-            />
-            <TextField
-              label="Phone"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              name="Téléphone"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-            <TextField
-              label="Address"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              name="adresse"
-              value={formData.address}
-              onChange={handleChange}
-            />
-            <Button type="submit" variant="contained" color="primary">
-              Mettre à jour 
-            </Button>
-          </form>
-        </Paper>
-      </Grid>
-    </Grid>
+  <Grid item xs={12} md={8} lg={6}>
+    <div style={{ padding: '20px', backgroundColor: 'transparent' }}>
+      <Typography variant="h4" gutterBottom style={{ marginBottom: '20px', color: '#b0bec5' }}>
+        Mon Profil
+      </Typography>
+      
+      <form onSubmit={handleUpdatePhoto}>
+        <Avatar
+          src={imageUrl}
+          alt="Profile Photo"
+          style={{ width: '100px', height: '100px', marginBottom: '20px' }}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          style={{ marginBottom: '20px', color: '#e0e0e0' }}  
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          style={{ backgroundColor: '#42a5f5', color: '#fff' }} 
+        >
+          Changer
+        </Button>
+      </form>
+      
+      <form onSubmit={handleUpdateUser}>
+        <TextField
+          label="Email"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' },  
+            readOnly: true
+          }}
+        />
+        <TextField
+          label="Prénom"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="lastname"
+          value={formData.lastname}
+          onChange={handleChange}
+          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' }, 
+          }}
+        />
+        <TextField
+          label="Nom"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="firstname"
+          value={formData.firstname}
+          onChange={handleChange}
+          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' },  
+          }}
+        />
+        <TextField
+          label="Téléphone"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' },  
+          }}
+        />
+        <TextField
+          label="Adresse"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          name="address"
+          value={formData.address}
+          onChange={handleChange}
+          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
+          InputProps={{
+            style: { backgroundColor: '#424242', color: '#e0e0e0' },  
+          }}
+        />
+        
+        <Button
+          type="submit"
+          variant="contained"
+          style={{ marginTop: '16px', backgroundColor: '#42a5f5', color: '#fff' }}
+        >
+          Mettre à jour
+        </Button>
+      </form>
+    </div>
+  </Grid>
+</Grid>
+
   );
 };
 

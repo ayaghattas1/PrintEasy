@@ -4,9 +4,11 @@ const User = require("../models/user");
 const path = require('path');
 const upload = require('../middleware/multer');
 const multer = require('multer');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
 
 exports.signup = (req, res, next) => {
-  //const defaultImagePath = path.join(__dirname, 'uploads');
   
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new User({
@@ -222,6 +224,83 @@ exports.getUserData = async (req, res) => {
   } catch (error) {
     console.error('Erreur lors de la récupération des données utilisateur:', error);
     res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+// Fonction pour envoyer l'email de réinitialisation
+exports.sendResetEmail = async (email, token) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "ayaghattas606@gmail.com",
+      pass: "peew vcuf wmhd yvcf",
+    },
+  });
+
+  const resetUrl = `http://localhost:3000/reset-password/${token}`;
+
+  const mailOptions = {
+      from: 'ayaghattas606@gmail.com',
+      to: email,
+      subject: 'Réinitialisation du mot de passe',
+      html: `<p>Vous avez demandé une réinitialisation de mot de passe. Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
+             <a href="${resetUrl}">Réinitialiser le mot de passe</a>`
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+      const user = await User.findOne({ email });
+      if (!user) {
+          return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      }
+
+      // Générer un token de réinitialisation
+      const token = crypto.randomBytes(20).toString('hex');
+
+      // Enregistrer le token et sa date d'expiration
+      user.resetPasswordToken = token;
+      user.resetPasswordExpires = Date.now() + 3600000; // 1 heure
+      await user.save();
+
+      // Envoyer l'e-mail
+      await exports.sendResetEmail(email, token); // Utilisez 'exports.' pour faire référence à la fonction
+      res.status(200).json({ message: 'Un e-mail de réinitialisation de mot de passe a été envoyé' });
+  } catch (error) {
+      console.error('Erreur dans forgotPassword:', error); // Affichez l'erreur dans la console
+      res.status(500).json({ message: 'Erreur lors de la demande de réinitialisation', error: error.message });
+  }
+};
+
+
+exports.resetPassword = async (req, res) => {
+  const { newPassword } = req.body;
+  const token = req.params.token;
+
+  try {
+      const user = await User.findOne({
+          resetPasswordToken: token,
+          resetPasswordExpires: { $gt: Date.now() } // Vérifier si le token n'est pas expiré
+      });
+
+      if (!user) {
+          return res.status(400).json({ message: 'Token de réinitialisation invalide ou expiré' });
+      }
+
+      // Hash le nouveau mot de passe
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      user.resetPasswordToken = undefined; // Réinitialiser le token
+      user.resetPasswordExpires = undefined; // Réinitialiser l'expiration
+      await user.save();
+
+      res.status(200).json({ message: 'Votre mot de passe a été réinitialisé avec succès' });
+  } catch (error) {
+      res.status(500).json({ message: 'Erreur lors de la réinitialisation du mot de passe', error });
   }
 };
 

@@ -11,6 +11,6 @@ router.post('/add',auth.loggedMiddleware, upload.single('file'), impressionContr
 router.delete("/deleteImp/:id",auth.loggedMiddleware, impressionController.deleteImpression);
 router.get("/getMesImp",auth.loggedMiddleware, impressionController.getMesImpressions);
 router.patch("/updateImp/:id",auth.loggedMiddleware, impressionController.updateImpression);
-
+router.get('/reports/stats', auth.loggedMiddleware, impressionController.getImpressionStats);
 
 module.exports = router;

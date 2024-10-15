@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { BsFillBellFill, BsFillEnvelopeFill, BsPersonCircle, BsJustify } from 'react-icons/bs';
+import { BsFillBellFill, BsPersonCircle, BsJustify } from 'react-icons/bs';
 import { MDBNavbar, MDBContainer, MDBInputGroup, MDBBtn } from 'mdb-react-ui-kit';
-import logo from '../assets/logoo.png'; // Adjust path if necessary
+import logo from '../assets/logoo.png';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Notifications from './Notifications';
 
 function Header({ OpenSidebar }) {
   const [profilePhoto, setProfilePhoto] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     const fetchProfilePhoto = async () => {
@@ -38,28 +40,41 @@ function Header({ OpenSidebar }) {
     fetchProfilePhoto();
   }, []);
 
+  // Toggle notifications box
+  const toggleNotifications = () => {
+    setShowNotifications(prev => !prev);
+  };
+
   return (
-    <header className='header'>
-      <div className='header-left'>
-        <img src={logo} alt='Logo' className='logo' />
+    <header className="header">
+      <div className="header-left">
+        <img src={logo} alt="Logo" className="logo" />
       </div>
-      <div className='menu-icon'>
-        <BsJustify className='icon' onClick={OpenSidebar} />
+      <div className="menu-icon">
+        <BsJustify className="icon" onClick={OpenSidebar} />
       </div>
-      <div className='header-center'>
-        {/* Search bar integration */}
-        <MDBNavbar dark bgColor='dark'>
+      <div className="header-center">
+
+        <MDBNavbar >
           <MDBContainer fluid>
-            <MDBInputGroup tag="form" className='d-flex w-auto mb-3'>
-              <input className='form-control' placeholder="Type query" aria-label="Search" type='Search' />
+            <MDBInputGroup tag="form" className="d-flex w-auto mb-3">
+              <input className="form-control" placeholder="Type query" aria-label="Search" type="Search" />
               <MDBBtn outline>Search</MDBBtn>
             </MDBInputGroup>
           </MDBContainer>
         </MDBNavbar>
       </div>
-      <div className='header-right'>
-        <BsFillBellFill className='icon' />
-        <BsFillEnvelopeFill className='icon' />
+      <div className="header-right">
+
+        <div className="notification-icon" onClick={toggleNotifications}>
+          <BsFillBellFill className="icon" />
+          {showNotifications && (
+            <div className="notifications-popup">
+              <Notifications />
+            </div>
+          )}
+        </div>
+
         <Link to="/Profile">
           {loading ? (
             <span>Loading...</span>
@@ -70,7 +85,7 @@ function Header({ OpenSidebar }) {
               className="profile-icon"
             />
           ) : (
-            <BsPersonCircle className='icon' />
+            <BsPersonCircle className="icon" />
           )}
         </Link>
       </div>

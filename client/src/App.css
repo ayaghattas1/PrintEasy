@@ -2,7 +2,7 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #1d2634;
+  background-color: #44526b;
   color: #9e9ea4;
   font-family: 'Montserrat', sans-serif;
 }
@@ -17,6 +17,7 @@ body {
 .icon_header {
   font-size: 26px;
 }
+
 /* Grid Layout */
 .grid-container {
   display: grid;
@@ -120,25 +121,62 @@ body {
 .main-title {
   margin-bottom: 20px;
 }
-
 .main-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adapte les colonnes selon l'espace disponible */
+  gap: 20px; /* Espacement entre les cartes */
+  width: 100%; /* Prend toute la largeur de l'écran */
 }
 
+/* Style des cartes */
 .card {
-  background-color: #2e2e3e;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: left;
+  background-color: #263043;
+  color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%; /* Largeur pleine pour chaque carte */
+  height: auto; /* Ajustement automatique de la hauteur */
 }
 
+.card:hover {
+  transform: translateY(-5px); /* Animation de survol */
+}
 
-.card h3 {
+/* Ajustement des images à la carte */
+.card img {
+  width: 100%; /* Largeur de l'image égale à celle de la carte */
+  height: 200px; /* Hauteur fixée */
+  object-fit: cover; /* Recouvre l'image sans déformation */
+}
+
+/* Contenu de la carte */
+.card-content {
+  flex-grow: 1;
   margin-bottom: 10px;
-  font-size: 18px;
 }
+
+/* Séparation des actions (prix et bouton) */
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+/* Limite la taille du texte de description */
+.description-text {
+  max-height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
 
 /* Charts */
 .charts {
@@ -193,17 +231,36 @@ body {
   }
 }
 
-.card {
-  width: 300px; /* Fixe la largeur des cartes */
-  height: 400px; /* Fixe la hauteur des cartes */
-  margin: 20px; /* Espace entre les cartes */
-  background-color: #6a6af0;
+/* Notifications */
+.notification-icon {
+  position: relative;
+  cursor: pointer;
 }
 
-/* Assure que l'image occupe toute la largeur et hauteur de la carte */
-.card img {
-  width: 100%;
-  height: 200px; /* Fixe la hauteur de l'image */
-  object-fit: cover; /* Recouvre l'image sans déformer ses proportions */
+.notifications-box {
+  position: absolute;
+  right: 0;
+  top: 40px; /* Ajustez en fonction de la taille de votre header */
+  width: 250px;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 100;
 }
 
+.notifications-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notifications-box li {
+  padding: 8px 0;
+  border-bottom: 1px solid #444;
+}
+
+.notifications-box li:last-child {
+  border-bottom: none;
+}

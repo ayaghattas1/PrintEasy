@@ -14,18 +14,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const defaultTheme = createTheme();
 
@@ -38,6 +26,8 @@ export default function SignUp() {
     phone: '',
     address: ''
   });
+
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -46,10 +36,76 @@ export default function SignUp() {
       ...prevData,
       [id]: value
     }));
+    
+    validateField(id, value);
+  };
+
+  const validateField = (field, value) => {
+    let fieldErrors = { ...errors };
+
+    switch (field) {
+      case 'firstname':
+      case 'lastname':
+      case 'email':
+      case 'phone':
+      case 'address':
+        fieldErrors[field] = value.trim() === '' ? 'Ce champ est obligatoire' : '';
+        break;
+      case 'password':
+        fieldErrors.password = validatePassword(value);
+        break;
+      default:
+        break;
+    }
+
+    setErrors(fieldErrors);
+  };
+
+  const validatePassword = (password) => {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (password.length < minLength) {
+      return `Le mot de passe doit contenir au moins ${minLength} caractères`;
+    } else if (!hasUpperCase) {
+      return 'Le mot de passe doit contenir au moins une lettre majuscule';
+    } else if (!hasLowerCase) {
+      return 'Le mot de passe doit contenir au moins une lettre minuscule';
+    } else if (!hasNumber) {
+      return 'Le mot de passe doit contenir au moins un chiffre';
+    } else if (!hasSpecialChar) {
+      return 'Le mot de passe doit contenir au moins un caractère spécial';
+    } else {
+      return '';
+    }
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email) ? '' : 'Adresse e-mail invalide';
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const isFormValid = Object.values(errors).every((error) => error === '') &&
+      Object.values(formData).every((field) => field.trim() !== '');
+
+    if (!isFormValid) {
+      setErrors({
+        ...errors,
+        firstname: formData.firstname.trim() === '' ? 'Ce champ est obligatoire' : '',
+        lastname: formData.lastname.trim() === '' ? 'Ce champ est obligatoire' : '',
+        email: validateEmail(formData.email), 
+        phone: formData.phone.trim() === '' ? 'Ce champ est obligatoire' : '',
+        address: formData.address.trim() === '' ? 'Ce champ est obligatoire' : '',
+        password: validatePassword(formData.password),
+      });
+      return;
+    }
 
     try {
       const response = await fetch('/user/signup', {
@@ -89,21 +145,21 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up now
+            SignUp
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
-                  name="firstname"
                   required
                   fullWidth
                   id="firstname"
-                  label="First Name"
+                  label="Prénom"
                   autoFocus
                   value={formData.firstname}
                   onChange={handleChange}
+                  error={Boolean(errors.firstname)}
+                  helperText={errors.firstname}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -111,11 +167,11 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="lastname"
-                  label="Last Name"
-                  name="lastname"
-                  autoComplete="family-name"
+                  label="Nom"
                   value={formData.lastname}
                   onChange={handleChange}
+                  error={Boolean(errors.lastname)}
+                  helperText={errors.lastname}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -123,45 +179,48 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
+                  label="Email"
                   value={formData.email}
                   onChange={handleChange}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  name="phone"
-                  label="Phone"
-                  id="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  name="address"
-                  label="Address"
-                  id="address"
-                  value={formData.address}
-                  onChange={handleChange}
+                  error={Boolean(errors.email)}
+                  helperText={errors.email}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
+                  id="phone"
+                  label="Téléphone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  error={Boolean(errors.phone)}
+                  helperText={errors.phone}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="address"
+                  label="Adresse"
+                  value={formData.address}
+                  onChange={handleChange}
+                  error={Boolean(errors.address)}
+                  helperText={errors.address}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
                   id="password"
-                  autoComplete="new-password"
+                  label="Mot de passe"
+                  type="password"
                   value={formData.password}
                   onChange={handleChange}
+                  error={Boolean(errors.password)}
+                  helperText={errors.password}
                 />
               </Grid>
             </Grid>
@@ -176,13 +235,12 @@ export default function SignUp() {
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="/" variant="body2">
-                  Already have an account? Sign in
+                  Vous avez déjà un compte ? LogIn
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
