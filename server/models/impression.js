@@ -18,7 +18,7 @@ const impressionSchema = mongoose.Schema({
     nbPages: { type: Number, required: true },
     nbFois: { type: Number, required: true },
     file: { 
-        type: [String], // Changed to array of strings
+        type: [String], 
         validate: {
             validator: function(v) {
                 return v.every(fileName => /\.(pdf|docx|jpg|png)$/.test(fileName));

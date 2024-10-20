@@ -50,38 +50,31 @@ function Dashboard() {
     };
 
     const sliderSettings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 5, // Ajuster selon la taille
-        slidesToScroll: 1,
+        dots: true, // Affiche les points en dessous
+        infinite: true, // Boucle infinie
+        speed: 500, // Vitesse de défilement
+        slidesToShow: 1, // Nombre de cartes à afficher par slide
+        slidesToScroll: 1, // Nombre de cartes à défiler par clic
         responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                    infinite: true,
-                    dots: true
-                }
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 1,
+              infinite: true,
+              dots: true,
             },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                    initialSlide: 2
-                }
+          },
+          {
+            breakpoint: 600,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 1,
             },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                }
-            }
-        ]
+          },
+        ],
     };
+    
 
     return (
         <main className='main-container'>
@@ -93,21 +86,25 @@ function Dashboard() {
                 {/* Slider pour afficher les produits */}
                 <Slider {...sliderSettings}>
                     {produits.map((produit) => (
-                        <div key={produit._id}>
-                            <MDBCard className='card' style={{ width: '100%' }}>
+                        <div key={produit._id} style={{ padding: '0 10px' }}>
+                            <MDBCard className='card' style={{ width: '100%', borderRadius: '10px', overflow: 'hidden' }}>
                                 <MDBCardImage 
                                     src={`http://localhost:5000${produit.image}`} 
                                     position='top' 
                                     alt={produit.nom} 
-                                    style={{ height: '200px', objectFit: 'cover' }} // Ajuster la hauteur pour s'adapter
+                                    style={{ height: '200px', objectFit: 'cover', borderTopLeftRadius: '10px', borderTopRightRadius: '10px' }} // Ajustement des images
                                 />
                                 <MDBCardBody>
                                     <MDBCardTitle>{produit.nom}</MDBCardTitle>
-                                    <MDBCardText className='description-text'>{produit.description}</MDBCardText>
-                                    <MDBCardText>Prix: {produit.prix} DT</MDBCardText>
+                                    <MDBCardText className='description-text'>
+                                        {produit.description}
+                                    </MDBCardText>
+                                    <MDBCardText>
+                                        <strong>Prix: </strong>{produit.prix} DT
+                                    </MDBCardText>
                                     <div className="card-actions">
                                         <MDBBtn onClick={() => handleShowProductDetails(produit)}>
-                                            <BsFillArchiveFill className='card_icon'/> Détails du produit
+                                            <BsFillArchiveFill className='card_icon'/> Détails
                                         </MDBBtn>
                                         {/* Bouton pour ajouter au panier */}
                                         <MDBBtn className="mt-2" color="success" onClick={() => handleAddToCart(produit._id)}>
@@ -124,7 +121,7 @@ function Dashboard() {
             {/* Modal pour afficher les détails du produit */}
             <Modal show={showProductDetails} onHide={handleCloseProductDetails}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Détails du Produit</Modal.Title>
+                    <Modal.Title>Détails</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h5>Nom: {selectedProduit.nom}</h5>

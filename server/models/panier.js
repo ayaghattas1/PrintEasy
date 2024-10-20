@@ -19,7 +19,18 @@ const panierSchema = new mongoose.Schema({
         default: 1
       }
     }
-  ]
-});
+  ],
+
+  impressions: [{
+  
+      impression : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Impression',
+        required: true
+    }
+  }]
+  
+}
+);
 
 module.exports = mongoose.model("Panier", panierSchema);

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../Css/Notif.css' ;
+
 
 function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -8,7 +10,7 @@ function Notifications() {
     const fetchNotifications = async () => {
       const token = localStorage.getItem('authToken');
       try {
-        const response = await axios.get('http://localhost:5000/admin/notifications', {
+        const response = await axios.get('http://localhost:5000/user/notifications', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setNotifications(response.data.notifications);

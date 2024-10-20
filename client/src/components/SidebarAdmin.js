@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  BsCart3, BsGift, BsFillArchiveFill, BsMenuButtonWideFill, BsPrinter} from 'react-icons/bs';
+  BsCart3, BsFillArchiveFill, BsMenuButtonWideFill, BsPrinter} from 'react-icons/bs';
 import { TbLogout2 } from "react-icons/tb";
-import { CgProfile, CgHome } from "react-icons/cg";
-import { MdWallpaper } from "react-icons/md";
-import '../Css/Panier.css' ;
+import { CgHome } from "react-icons/cg";
 import axios from 'axios';
 import { confirmAlert } from 'react-confirm-alert'; // Import the confirmation alert
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import styles
 
-function Sidebar({ openSidebarToggle }) {
+function SidebarAdmin({ openSidebarToggle }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
@@ -66,33 +64,23 @@ function Sidebar({ openSidebarToggle }) {
     <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive" : ""}>
       <ul className='sidebar-list'>
         <li className='sidebar-list-item'>
-          <Link to="/dashboard">
+          <Link to="/AdminDash">
             <CgHome className='icon' /> Accueil
           </Link>
         </li>
         <li className='sidebar-list-item'>
           <Link to="/monPanier">
-            <BsCart3 className='icon_header' /> Mon panier
+            <BsCart3 className='icon_header' /> Les paniers
           </Link>
         </li>
         <li className='sidebar-list-item'>
           <Link to="/commandes">
-            <BsPrinter className='icon_header' /> Mes Impressions
+            <BsPrinter className='icon_header' /> Les Impressions
           </Link>
         </li>
         <li className='sidebar-list-item'>
-          <Link to="/produits">
+          <Link to="/produitsAdmin">
             <BsFillArchiveFill className='icon' /> Produits
-          </Link>
-        </li>
-        <li className='sidebar-list-item'>
-          <Link to="/impressions">
-            <MdWallpaper className='icon' /> Tirage numérique
-          </Link>
-        </li>
-        <li className='sidebar-list-item'>
-          <Link to="/DesignPerso">
-            <BsGift className='icon' /> Design Personnalisé
           </Link>
         </li>
         {isAdmin && (
@@ -103,11 +91,6 @@ function Sidebar({ openSidebarToggle }) {
           </li>
         )}
         <li className='sidebar-list-item'>
-          <Link to="/profile">
-            <CgProfile className='icon' /> Profil
-          </Link>
-        </li>
-        <li className='sidebar-list-item'>
           <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
             <TbLogout2 className='icon' /> Logout
           </span>
@@ -117,4 +100,4 @@ function Sidebar({ openSidebarToggle }) {
   );
 }
 
-export default Sidebar;
+export default SidebarAdmin;

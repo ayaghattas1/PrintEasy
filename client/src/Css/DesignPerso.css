@@ -1,0 +1,29 @@
+.gallery-section {
+    margin: 40px 0;
+}
+
+.gallery-section img {
+    border: 2px solid #263043; /* Border color for images */
+    border-radius: 8px; /* Rounded corners for images */
+}
+
+.contact-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 7px; /* Espace entre les images */
+}
+
+.gallery-image {
+  width: 250px; /* Largeur fixe pour toutes les images */
+  height: 250px; /* Hauteur fixe pour toutes les images */
+  object-fit: cover; /* Ajuste l'image pour qu'elle reste proportionnelle */
+  border-radius: 5px; /* Optionnel : coins arrondis */
+}

@@ -1,5 +1,8 @@
 const Impression = require("../models/impression");
+const Panier = require('../models/panier');
 const User = require("../models/user");
+const Notification = require("../models/notification");
+
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const mongoDBUri = 'mongodb://127.0.0.1:27017/PrintEasy';
@@ -61,6 +64,12 @@ const addImpression = async (req, res) => {
   try {
     const userId = req.auth.userId;
 
+    // Fetch user details from the database
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Utilisateur non trouvé.' });
+    }
+
     // Create a new impression with the uploaded file's name in GridFS
     const newImpression = new Impression({
       description: req.body.description || '',
@@ -77,19 +86,35 @@ const addImpression = async (req, res) => {
       owner: userId,
     });
 
-    // Save to the database
+    // Save the new impression
     const savedImpression = await newImpression.save();
 
-    // Find all admin users to notify
-    const admins = await User.find({ role: 'Admin' });
-    const notificationMessage = `L'utilisateur ${req.auth.firstname} ${req.auth.lastname} a ajouté une impression avec la date limite de ${req.body.date_maximale}`;
+    // Find the user's cart or create a new one if it doesn't exist
+    let panier = await Panier.findOne({ user: userId });
+    if (!panier) {
+      panier = new Panier({
+        user: userId,
+        produits: [],
+        impressions: [],
+      });
+    }
 
-    // Add notification for each admin
+    // Add the new impression to the user's cart
+    panier.impressions.push({ impression: savedImpression._id });
+
+    // Save the updated cart
+    await panier.save();
+
+    // Notify admins about the new impression
+    const admins = await User.find({ role: 'Admin' });
+    const notificationMessage = `L'utilisateur ${user.firstname} ${user.lastname} a ajouté une impression.`;
+
     const adminNotifications = admins.map(admin => {
-      admin.notifications.push({
+      const notification = new Notification({
+        owner: admin._id,
         message: notificationMessage,
       });
-      return admin.save();
+      return notification.save();
     });
 
     await Promise.all(adminNotifications);
@@ -97,7 +122,7 @@ const addImpression = async (req, res) => {
     return res.status(201).json({
       success: true,
       impression: savedImpression,
-      message: 'Impression ajoutée avec succès !'
+      message: 'Impression ajoutée avec succès et ajoutée au panier !'
     });
   } catch (error) {
     console.error(error);
@@ -123,15 +148,34 @@ const fetchImpression = (req, res) => {
     .catch(error => res.status(400).json({ error: error.message, message: "Données invalides !" }));
 };
 
-const deleteImpression = (req, res) => {
-  Impression.findByIdAndDelete(req.params.id)
-    .then(impression => {
-      if (!impression) {
-        return res.status(404).json({ message: "Impression non trouvé !" });
-      }
-      res.status(200).json({ message: "Impression supprimé avec succès !" });
-    })
-    .catch(error => res.status(400).json({ error: error.message, message: "Problème lors de la suppression !" }));
+const deleteImpression = async (req, res) => {
+  try {
+    // Step 1: Delete the impression
+    const impression = await Impression.findByIdAndDelete(req.params.id);
+
+    // Step 2: Check if the impression exists
+    if (!impression) {
+      return res.status(404).json({ message: "Impression non trouvé !" });
+    }
+
+    // Step 3: Get the user ID from the request
+    const userId = req.auth.userId; // Assuming you have the user ID in the request, e.g., from a middleware
+
+    // Step 4: Update the user's cart to remove the impression
+    const result = await Panier.updateOne(
+      { user: userId },
+      { $pull: { impressions: { impression: req.params.id } } } // Remove the impression from the cart
+    );
+
+    // Step 5: Check if the update was successful
+    if (result.nModified === 0) {
+      return res.status(404).json({ message: "Aucune impression trouvée dans le panier." });
+    }
+
+    res.status(200).json({ message: "Impression supprimé avec succès !" });
+  } catch (error) {
+    res.status(400).json({ error: error.message, message: "Problème lors de la suppression !" });
+  }
 };
 
 const updateImpression = (req, res) => {

@@ -304,24 +304,3 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
-// exports.markasread = async (req, res) => {
-//   try {
-//     const userId = req.params.id;
-//     const user = await User.findById(userId);
-//     if (!user) {
-//         return res.status(404).json({ error: 'User not found' });
-//     }
-
-//     // Update all notifications to mark them as read
-//     user.notifications.forEach(notification => {
-//         notification.read = true;
-//     });
-
-//     await user.save();
-
-//     res.status(200).json({ message: 'Notifications marked as read' });
-// } catch (error) {
-//     console.error('Error marking notifications as read:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-// }
-// }

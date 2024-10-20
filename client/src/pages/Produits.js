@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext  } from 'react'; 
 import { 
   MDBCard, 
   MDBCardBody, 
@@ -11,6 +11,7 @@ import { BsFillArchiveFill } from 'react-icons/bs';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 import '../App.css';
+import { CartContext } from '../components/CartContext';
 
 function Produits() {
     const [produits, setProduits] = useState([]);
@@ -25,6 +26,7 @@ function Produits() {
     });
     const [selectedProduit, setSelectedProduit] = useState({});
     const [isAdmin, setIsAdmin] = useState(false);
+    const { addToCart } = useContext(CartContext);
 
     useEffect(() => {
         const fetchUserRole = async () => {
@@ -36,6 +38,7 @@ function Produits() {
                     });
                     if (response.status === 200) {
                         const currentUser = response.data;
+                        console.log("Current User:", currentUser); // Log pour vérifier l'utilisateur
                         setIsAdmin(currentUser.role === 'admin');
                     }
                 } catch (error) {
@@ -43,7 +46,7 @@ function Produits() {
                 }
             }
         };
-
+    
         fetchUserRole();
     }, []);
 
@@ -76,20 +79,6 @@ function Produits() {
         setNewProduit({ ...newProduit, image: e.target.files[0] });
     };
 
-    const handleAddToCart = async (produit) => {
-        if (!produit || !produit._id) {
-            alert('Aucun produit sélectionné ou ID de produit manquant.');
-            return;
-        }
-    
-        try {
-            await axios.post(`/addToPanier/${produit._id}`);
-            alert('Produit ajouté au panier avec succès !');
-        } catch (error) {
-            console.error("Erreur lors de l'ajout au panier :", error);
-            alert('Une erreur s\'est produite lors de l\'ajout au panier.');
-        }
-    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
@@ -105,12 +94,27 @@ function Produits() {
             });
             setProduits([...produits, response.data.produit]);
             handleCloseAddProduct();
-            alert('Produit ajouté avec succès !'); // Message de confirmation
+            alert('Produit ajouté avec succès !');
         } catch (error) {
             console.error('Erreur lors de l\'ajout du produit:', error);
             alert('Une erreur s\'est produite lors de l\'ajout du produit.');
         }
     };
+
+    const handleAddToCart = async (produit) => {
+        try {
+          const token = localStorage.getItem('authToken');
+          const response = await axios.post(`/panier/addToPanier/${produit._id}`, {}, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (response.status === 200) {
+            addToCart(produit); // Ajoute localement après succès de l'API
+            alert('Produit ajouté au panier');
+          }
+        } catch (error) {
+          console.error('Erreur lors de l\'ajout au panier', error);
+        }
+      };
 
     return (
         <main className='main-container'>
@@ -122,30 +126,29 @@ function Produits() {
             </div>
 
             <div className='main-cards'>
-    {produits.map((produit) => (
-        <MDBCard className='card' key={produit._id}>
-            <MDBCardImage 
-                src={`http://localhost:5000${produit.image}`} 
-                position='top' 
-                alt={produit.nom} 
-            />
-            <MDBCardBody>
-                <MDBCardTitle>{produit.nom}</MDBCardTitle>
-                <MDBCardText className='description-text'>{produit.description}</MDBCardText>
-                <MDBCardText>Prix: {produit.prix} DT</MDBCardText>
-                <div className="card-actions">
-                    <MDBBtn onClick={() => handleShowProductDetails(produit)}>
-                        <BsFillArchiveFill className='card_icon'/> Détails du produit
-                    </MDBBtn>
-                    {/* Updated button to call handleAddToCart with the selected product */}
-                    <MDBBtn className="mt-2" color="success" onClick={() => handleAddToCart(produit)}>
-                        Ajouter au panier
-                    </MDBBtn>
-                </div>
-            </MDBCardBody>
-        </MDBCard>
-    ))}
-</div>
+                {produits.map((produit) => (
+                    <MDBCard className='card' key={produit._id}>
+                        <MDBCardImage 
+                            src={`http://localhost:5000${produit.image}`} 
+                            position='top' 
+                            alt={produit.nom} 
+                        />
+                        <MDBCardBody>
+                            <MDBCardTitle>{produit.nom}</MDBCardTitle>
+                            <MDBCardText className='description-text'>{produit.description}</MDBCardText>
+                            <MDBCardText>Prix: {produit.prix} DT</MDBCardText>
+                            <div className="card-actions">
+                                <MDBBtn onClick={() => handleShowProductDetails(produit)}>
+                                    <BsFillArchiveFill className='card_icon'/> Détails
+                                </MDBBtn>
+                                <MDBBtn className="mt-2" color="success" onClick={() => handleAddToCart(produit)}>
+                                    Ajouter au panier
+                                </MDBBtn>
+                            </div>
+                        </MDBCardBody>
+                    </MDBCard>
+                ))}
+            </div>
 
             <Modal show={showAddProduct} onHide={handleCloseAddProduct}>
                 <Modal.Header closeButton>
@@ -219,7 +222,7 @@ function Produits() {
 
             <Modal show={showProductDetails} onHide={handleCloseProductDetails}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Détails du Produit</Modal.Title>
+                    <Modal.Title>Détails</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <h5>Nom: {selectedProduit.nom}</h5>
