@@ -16,6 +16,8 @@ function Header({ OpenSidebar }) {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState([]); // State for notifications
 
   // Fetch user profile photo
   useEffect(() => {
@@ -82,12 +84,62 @@ function Header({ OpenSidebar }) {
     calculateTotal();
   }, [cartItems]);
 
-  // Toggle notifications box
-  const toggleNotifications = () => {
-    setShowNotifications(prev => !prev);
+  // Fetch notifications and count unread ones
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const token = localStorage.getItem('authToken');
+      try {
+        const response = await axios.get('http://localhost:5000/notification', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const fetchedNotifications = response.data.notifications;
+        setNotifications(fetchedNotifications);
+
+        // Filter unread notifications
+        const unreadNotifications = fetchedNotifications.filter(notification => !notification.read);
+        setUnreadCount(unreadNotifications.length); // Update unread count
+      } catch (error) {
+        console.error('Erreur lors de la récupération des notifications:', error);
+      }
+    };
+
+    fetchNotifications();
+  }, [showNotifications]);
+
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    const token = localStorage.getItem('authToken');
+    try {
+      await axios.post('http://localhost:5000/notification/mark-as-read', {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Update local notification state to mark all as read
+      setNotifications(prevNotifications =>
+        prevNotifications.map(notification => ({
+          ...notification,
+          read: true,
+        }))
+      );
+
+      setUnreadCount(0); // Reset unread count
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour des notifications:', error);
+    }
   };
 
-  // Toggle cart dropdown
+  const toggleNotifications = () => {
+    setShowNotifications(prev => !prev);
+    if (!showNotifications && unreadCount > 0) {
+      // Mark all notifications as read when the panel opens
+      markAllAsRead();
+    }
+  };
+
+  const handleNotificationRead = () => {
+    setUnreadCount(0); // Reset the unread count when a notification is read
+  };
+
   const toggleCart = () => {
     setShowCart(prev => !prev);
   };
@@ -147,7 +199,7 @@ function Header({ OpenSidebar }) {
           <MDBContainer fluid>
             <MDBInputGroup tag="form" className="d-flex w-auto mb-3">
               <input className="form-control" placeholder="Type query" aria-label="Search" type="Search" />
-              <MDBBtn outline>Search</MDBBtn>
+              <MDBBtn outline>Chercher</MDBBtn>
             </MDBInputGroup>
           </MDBContainer>
         </MDBNavbar>
@@ -198,15 +250,19 @@ function Header({ OpenSidebar }) {
           </div>
         )}
 
-        {/* Notification Icon with toggle functionality */}
-        <div className="notification-icon" onClick={toggleNotifications}>
-          <BsFillBellFill className="icon" />
-          {showNotifications && (
-            <div className="notifications-popup">
-              <Notifications />
-            </div>
-          )}
-        </div>
+      {/* Notification Icon with toggle functionality */}
+      <div className="notification-icon" onClick={toggleNotifications}>
+        <BsFillBellFill className="icon_header" />
+        {unreadCount > 0 && <span className="cart-count">{unreadCount}</span>}
+        {showNotifications && (
+          <div className="notifications-popup">
+            <Notifications 
+              notifications={notifications} 
+              onNotificationRead={handleNotificationRead} 
+            />
+          </div>
+        )}
+      </div>
 
         {/* Profile Icon */}
         <Link to="/Profile">

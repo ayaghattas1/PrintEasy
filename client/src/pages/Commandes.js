@@ -4,7 +4,7 @@ import { Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 import { styled } from '@mui/material/styles';
 import moment from 'moment';
 import FileIcon from '../components/FileIcon';  
-import { Edit, Delete } from '@mui/icons-material';
+import {Delete } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { confirmAlert } from 'react-confirm-alert';
@@ -12,19 +12,19 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  color: '#e0e0e0',
+  color: '#263043', // Couleur noire pour les textes des cellules
   borderBottom: `1px solid rgba(255, 255, 255, 0.2)`,
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#e0e0e0', // Remplacez par une couleur plus foncée selon vos préférences
   },
   '&:nth-of-type(even)': {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#f0f0f0', // Remplacez par une couleur légèrement plus claire
   },
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: '#d5d5d5', // Une couleur légèrement plus foncée lors du survol
   },
 }));
 
@@ -140,12 +140,6 @@ const Commandes = () => {
     });
   };
   
-  // Function to handle modify (you can redirect to a new page or show a modal)
-  const handleModify = (id) => {
-    // You can redirect to the edit page, or open a modal with the existing data
-    console.log('Modify impression with ID:', id);
-    // Example: window.location.href = `/editImpression/${id}`;
-  };
 
   if (loading) {
     return <CircularProgress color="inherit" />;
@@ -192,7 +186,7 @@ const Commandes = () => {
               <StyledTableCell>{impression.date_maximale ? moment(impression.date_maximale).format('DD/MM/YYYY') : 'N/A'}</StyledTableCell>
               <StyledTableCell>
                 {impression.file && impression.file.map((fileName) => (
-                  <FileIcon key={fileName} fileName={fileName} />
+                  <FileIcon key={fileName} fileName={fileName} style={{ color: 'black' }} />
                 ))}
               </StyledTableCell>
               <StyledTableCell>{impression.livraison}</StyledTableCell>
@@ -200,9 +194,6 @@ const Commandes = () => {
               <StyledTableCell>
   {impression.etat === 'En cours de confirmation' && (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-      <IconButton onClick={() => handleModify(impression._id)} color="primary">
-        <Edit style={{ color: 'white' }} />
-      </IconButton>
       <IconButton onClick={() => handleDelete(impression._id)} color="secondary">
         <Delete style={{ color: 'white' }} />
       </IconButton>

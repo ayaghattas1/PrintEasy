@@ -7,6 +7,7 @@ import {
   MDBCardImage, 
   MDBBtn 
 } from 'mdb-react-ui-kit';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { BsFillArchiveFill } from 'react-icons/bs';
 import axios from 'axios'; 
 import { Modal, Button } from 'react-bootstrap';
@@ -19,7 +20,6 @@ function Dashboard() {
     const [produits, setProduits] = useState([]);
     const [showProductDetails, setShowProductDetails] = useState(false);
     const [selectedProduit, setSelectedProduit] = useState({});
-
 
     useEffect(() => {
         const fetchProduits = async () => {
@@ -74,51 +74,77 @@ function Dashboard() {
           },
         ],
     };
-    
 
     return (
         <main className='main-container'>
             <div className='main-title'>
-                <h3>DASHBOARD</h3>
+                <h1>Dashboard</h1>
             </div>
 
-            <div className='main-cards'>
-                {/* Slider pour afficher les produits */}
-                <Slider {...sliderSettings}>
-                    {produits.map((produit) => (
-                        <div key={produit._id} style={{ padding: '0 10px' }}>
-                            <MDBCard className='card' style={{ width: '100%', borderRadius: '10px', overflow: 'hidden' }}>
-                                <MDBCardImage 
-                                    src={`http://localhost:5000${produit.image}`} 
-                                    position='top' 
-                                    alt={produit.nom} 
-                                    style={{ height: '200px', objectFit: 'cover', borderTopLeftRadius: '10px', borderTopRightRadius: '10px' }} // Ajustement des images
-                                />
-                                <MDBCardBody>
-                                    <MDBCardTitle>{produit.nom}</MDBCardTitle>
-                                    <MDBCardText className='description-text'>
-                                        {produit.description}
-                                    </MDBCardText>
-                                    <MDBCardText>
-                                        <strong>Prix: </strong>{produit.prix} DT
-                                    </MDBCardText>
-                                    <div className="card-actions">
-                                        <MDBBtn onClick={() => handleShowProductDetails(produit)}>
-                                            <BsFillArchiveFill className='card_icon'/> Détails
-                                        </MDBBtn>
-                                        {/* Bouton pour ajouter au panier */}
-                                        <MDBBtn className="mt-2" color="success" onClick={() => handleAddToCart(produit._id)}>
-                                            Ajouter au panier
-                                        </MDBBtn>
-                                    </div>
-                                </MDBCardBody>
-                            </MDBCard>
-                        </div>
-                    ))}
-                </Slider>
-            </div>
+            {/* Section for Custom Design */}
+            <section className='section-container'>
+                <h4>Design personnalisé</h4>
+                <p>Créez vos propres designs pour cartes de visite, flyers, T-shirts, et plus encore.</p>
+                <Link to="/DesignPerso">
+                    <MDBBtn color="primary">Créer un Design</MDBBtn>
+                </Link>
+            </section>
 
-            {/* Modal pour afficher les détails du produit */}
+            {/* Section for Digital Printing (Tirage numérique) */}
+            <section className='section-container'>
+                <h4>Tirage numérique</h4>
+                <p>Effectuez des impressions numériques de qualité professionnelle.</p>
+                <Link to="/impressions">
+                    <MDBBtn color="warning">Voir les impressions</MDBBtn>
+                </Link>
+            </section>
+
+            {/* Section for Products */}
+            <section className='section-container'>
+                <h4>Produits</h4>
+                <p>Explorez notre catalogue de produits disponibles.</p>
+                <Link to="/produits">
+                    <MDBBtn color="success">Voir les produits</MDBBtn>
+                </Link>
+
+                {/* Slider to display featured products */}
+                <div className='main-cards'>
+                    <Slider {...sliderSettings}>
+                        {produits.map((produit) => (
+                            <div key={produit._id} style={{ padding: '0 10px' }}>
+                                <MDBCard className='card' style={{ width: '100%', borderRadius: '10px', overflow: 'hidden' }}>
+                                    <MDBCardImage 
+                                        src={`http://localhost:5000${produit.image}`} 
+                                        position='top' 
+                                        alt={produit.nom} 
+                                        style={{ height: '200px', objectFit: 'cover', borderTopLeftRadius: '10px', borderTopRightRadius: '10px' }} // Ajustement des images
+                                    />
+                                    <MDBCardBody>
+                                        <MDBCardTitle>{produit.nom}</MDBCardTitle>
+                                        <MDBCardText className='description-text'>
+                                            {produit.description}
+                                        </MDBCardText>
+                                        <MDBCardText>
+                                            <strong>Prix: </strong>{produit.prix} DT
+                                        </MDBCardText>
+                                        <div className="card-actions">
+                                            <MDBBtn onClick={() => handleShowProductDetails(produit)}>
+                                                <BsFillArchiveFill className='card_icon'/> Détails
+                                            </MDBBtn>
+                                            {/* Bouton pour ajouter au panier */}
+                                            <MDBBtn className="mt-2" color="success" onClick={() => handleAddToCart(produit._id)}>
+                                                Ajouter au panier
+                                            </MDBBtn>
+                                        </div>
+                                    </MDBCardBody>
+                                </MDBCard>
+                            </div>
+                        ))}
+                    </Slider>
+                </div>
+            </section>
+
+            {/* Modal for displaying product details */}
             <Modal show={showProductDetails} onHide={handleCloseProductDetails}>
                 <Modal.Header closeButton>
                     <Modal.Title>Détails</Modal.Title>
@@ -126,7 +152,7 @@ function Dashboard() {
                 <Modal.Body>
                     <h5>Nom: {selectedProduit.nom}</h5>
                     <p>Description: {selectedProduit.description}</p>
-                    <p>Prix: {selectedProduit.prix} €</p>
+                    <p>Prix: {selectedProduit.prix} DT</p>
                     <p>Quantité: {selectedProduit.quantite}</p>
                     <img 
                         src={`http://localhost:5000${selectedProduit.image}`} 

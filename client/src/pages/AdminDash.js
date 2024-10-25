@@ -94,14 +94,34 @@ const AdminDash = () => {
     fetchImpressions();
   }, [selectedEtat]); 
 
+//   useEffect(() => {
+//     const fetchUserData = async () => {
+//         try {
+//             const response = await fetch(`http://localhost:5000/user/${userId}`);
+//             if (!response.ok) {
+//                 throw new Error('Failed to fetch user data');
+//             }
+//             const data = await response.json();
+//             setSelectedOwner(data);
+//         } catch (error) {
+//             console.error('Error fetching user data:', error);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     fetchUserData();
+// }, [userId]);
+
   const handleEtatChange = (event) => {
     setSelectedEtat(event.target.value);
   };
 
   const handleAvatarClick = (owner) => {
+    console.log("Selected Owner:", owner); // Add this line to inspect the data
     setSelectedOwner(owner);
     setOpen(true);
-  };
+};
 
   const handleClose = () => {
     setOpen(false);
@@ -193,7 +213,7 @@ const AdminDash = () => {
     <div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1>Les Commandes</h1>
+        <h1>Les impressions</h1>
         <FormControl variant="outlined" style={{ minWidth: 100, maxWidth: 150, marginRight: '20px' }}>
           <InputLabel>Filtre</InputLabel>
           <StyledSelect
@@ -250,7 +270,7 @@ const AdminDash = () => {
                 <StyledTableCell>{impression.typeImpr}</StyledTableCell>
                 <StyledTableCell>{impression.nbPages}</StyledTableCell>
                 <StyledTableCell>{impression.nbFois}</StyledTableCell>
-                <StyledTableCell>{impression.prixfinal}€</StyledTableCell>
+                <StyledTableCell>{impression.prixfinal}DT</StyledTableCell>
                 <StyledTableCell>{moment(impression.date_maximale).format('YYYY-MM-DD')}</StyledTableCell>
                 <StyledTableCell>
                   {impression.file.map((file, index) => (
@@ -284,21 +304,21 @@ const AdminDash = () => {
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle>Profil du Client</DialogTitle>
         <DialogContent>
-          {selectedOwner && (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Avatar
-                src={`http://localhost:5000/uploads/${selectedOwner.photo}`}
-                alt="Profile"
-                style={{ width: 100, height: 100, marginRight: 20 }}
-              />
-              <div>
-                <Typography variant="h6">{selectedOwner.firstname} {selectedOwner.lastname}</Typography>
-                <Typography variant="body1">Email: {selectedOwner.email}</Typography>
-                <Typography variant="body1">Téléphone: {selectedOwner.phone}</Typography>
-                <Typography variant="body1">Adresse: {selectedOwner.address}</Typography>
-              </div>
-            </div>
-          )}
+        {selectedOwner && (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar
+            src={`http://localhost:5000/uploads/${selectedOwner.photo}`}
+            alt="Profile"
+            style={{ width: 100, height: 100, marginRight: 20 }}
+        />
+        <div>
+            <Typography variant="h6">{selectedOwner.firstname} {selectedOwner.lastname}</Typography>
+            <Typography variant="body1">Email: {selectedOwner.email}</Typography>
+            <Typography variant="body1">Téléphone: {selectedOwner.phone}</Typography>
+            <Typography variant="body1">Adresse: {selectedOwner.address}</Typography>
+        </div>
+    </div>
+)}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
@@ -360,11 +380,11 @@ const AdminDash = () => {
         </Typography>
         
         <Typography variant="body1" style={{ marginBottom: '8px' }}>
-          <strong>Prix Unitaire:</strong> {selectedImpression.prixunitaire}€
+          <strong>Prix Unitaire:</strong> {selectedImpression.prixunitaire}DT
         </Typography>
         
         <Typography variant="body1" style={{ marginBottom: '8px' }}>
-          <strong>Prix Final:</strong> {selectedImpression.prixfinal}€
+          <strong>Prix Final:</strong> {selectedImpression.prixfinal}DT
         </Typography>
         
         <Typography variant="body1" style={{ marginBottom: '8px' }}>

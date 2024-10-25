@@ -1,33 +1,75 @@
-/* Notifications */
 .notification-icon {
-    position: relative;
-    cursor: pointer;
-  }
-  
-  .notifications-box {
-    position: absolute;
-    right: 0;
-    top: 40px; /* Ajustez en fonction de la taille de votre header */
-    width: 250px;
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    z-index: 100;
-  }
-  
-  .notifications-box ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .notifications-box li {
-    padding: 8px 0;
-    border-bottom: 1px solid #444;
-  }
-  
-  .notifications-box li:last-child {
-    border-bottom: none;
-  }
+  position: relative;
+  cursor: pointer;
+  margin-right: 20px; /* Space between icons */
+}
+
+.notifications-box {
+  position: absolute;
+  right: 0;
+  top: 50px; /* Ajuster en fonction de la taille du header */
+  width: 400px;
+  background-color: #f9f9f9; /* Couleur de fond plus douce */
+  color: #333;
+  padding: 20px;
+  border-radius: 10px; /* Coins arrondis */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Ombre légère pour un effet surélevé */
+  z-index: 100;
+}
+
+.notifications-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notification-item {
+  padding: 12px;
+  background-color: #fff;
+  margin-bottom: 8px; /* Espacement entre les notifications */
+  border-radius: 8px; /* Coins arrondis pour chaque notification */
+  border: 1px solid #e0e0e0;
+  transition: background-color 0.3s ease; /* Transition douce pour le survol */
+}
+
+.notification-item:hover {
+  background-color: #f1f1f1; /* Couleur de fond au survol */
+}
+
+.notification-message {
+  font-size: 14px;
+  font-weight: 500;
+  color: #202853; /* Couleur personnalisée pour le message */
+  margin-bottom: 5px;
+}
+
+.notification-date {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.new-notification-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #ff4757; /* Indicateur rouge vif pour les non-lues */
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+.cart-count,
+.notification-count {
+  background-color: #ff4757; /* Same color for both badges */
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 12px;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+}
+
+.unread {
+  font-weight: bold; /* Texte en gras pour les non-lues */
+}

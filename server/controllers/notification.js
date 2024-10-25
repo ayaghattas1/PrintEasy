@@ -1,4 +1,23 @@
-const Notification = require("../models/notification");
+const Notification = require('../models/notification');
+const cron = require('node-cron');
+
+// Cron job to delete read notifications older than 3 days (runs once daily at midnight)
+cron.schedule('0 0 * * *', async () => {
+  try {
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+
+    // Delete notifications marked as read and older than 3 days
+    const result = await Notification.deleteMany({
+      read: true,
+      date: { $lt: threeDaysAgo },
+    });
+
+    console.log(`${result.deletedCount} notifications deleted successfully.`);
+  } catch (error) {
+    console.error('Error deleting old notifications:', error);
+  }
+});
+
 
 exports.getNotifications = async (req, res) => {
     try {
@@ -38,5 +57,17 @@ exports.getNotifications = async (req, res) => {
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
+
+  exports.deleteOldReadNotifications = async (req, res) => {
+    try {
+        const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+        const result = await Notification.deleteMany({ read: true, date: { $lt: threeDaysAgo } });
+
+        return res.status(200).json({ message: `${result.deletedCount} notifications supprimées avec succès.` });
+    } catch (error) {
+        console.error('Erreur lors de la suppression des notifications anciennes:', error);
+        return res.status(500).json({ error: 'Erreur interne du serveur' });
+    }
+};
 
 

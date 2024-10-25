@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextField, Typography, Grid, Avatar } from '@mui/material';
+import { Button, TextField, Grid, Avatar } from '@mui/material';
 import axios from 'axios';
 
 const Profile = () => {
@@ -114,9 +114,9 @@ const Profile = () => {
     <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
   <Grid item xs={12} md={8} lg={6}>
     <div style={{ padding: '20px', backgroundColor: 'transparent' }}>
-      <Typography variant="h4" gutterBottom style={{ marginBottom: '20px', color: '#b0bec5' }}>
+      <h1>
         Mon Profil
-      </Typography>
+      </h1>
       
       <form onSubmit={handleUpdatePhoto}>
         <Avatar

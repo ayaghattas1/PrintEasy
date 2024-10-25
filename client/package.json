@@ -6,6 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@knocklabs/react-notification-feed": "^0.8.15",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/x-data-grid": "^7.14.0",

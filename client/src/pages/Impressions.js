@@ -110,9 +110,9 @@ const Impressions = () => {
 <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
   <Grid item xs={12} md={8} lg={6}>
     <div style={{ padding: '20px', backgroundColor: 'transparent' }}>
-      <Typography variant="h4" gutterBottom style={{ marginBottom: '20px', color: '#b0bec5' }}>
+      <h1>
         Ajouter une Impression
-      </Typography>
+      </h1>
       <form onSubmit={handleSubmit}>
 
         <TextField

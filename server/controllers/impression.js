@@ -202,12 +202,22 @@ const updateImpression = (req, res) => {
       if (!impression) {
         return res.status(404).json({ message: "Impression non trouvée !" });
       }
-      res.status(200).json({ impression, message: "Impression mise à jour avec succès !" });
+
+      // Créer une notification pour le propriétaire de l'impression
+      const notification = new Notification({
+        owner: impression.owner,
+        message: `L'état de votre impression "${impression.description}" a été mis à jour à "${impression.etat}".`,
+      });
+
+      return notification.save().then(() => {
+        res.status(200).json({ impression, message: "Impression mise à jour avec succès !" });
+      });
     })
     .catch((error) =>
       res.status(500).json({ error: error.message, message: "Erreur lors de la mise à jour !" })
     );
 };
+
 
 // Controller function
 const getImpressionStats = async (req, res) => {

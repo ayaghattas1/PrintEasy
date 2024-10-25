@@ -6,10 +6,12 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Notifications from './Notifications';
 
-function Header({ OpenSidebar }) {
+function HeaderAdmin({ OpenSidebar }) {
   const [profilePhoto, setProfilePhoto] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState([]); // State for notifications
 
   // Fetch user profile photo
   useEffect(() => {
@@ -41,13 +43,61 @@ function Header({ OpenSidebar }) {
     fetchProfilePhoto();
   }, []);
 
-  // Toggle notifications box
-  const toggleNotifications = () => {
-    setShowNotifications(prev => !prev);
+  // Fetch notifications and count unread ones
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const token = localStorage.getItem('authToken');
+      try {
+        const response = await axios.get('http://localhost:5000/notification', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const fetchedNotifications = response.data.notifications;
+        setNotifications(fetchedNotifications);
+
+        // Filter unread notifications
+        const unreadNotifications = fetchedNotifications.filter(notification => !notification.read);
+        setUnreadCount(unreadNotifications.length); // Update unread count
+      } catch (error) {
+        console.error('Erreur lors de la récupération des notifications:', error);
+      }
+    };
+
+    fetchNotifications();
+  }, [showNotifications]);
+
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    const token = localStorage.getItem('authToken');
+    try {
+      await axios.post('http://localhost:5000/notification/mark-as-read', {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Update local notification state to mark all as read
+      setNotifications(prevNotifications =>
+        prevNotifications.map(notification => ({
+          ...notification,
+          read: true,
+        }))
+      );
+
+      setUnreadCount(0); // Reset unread count
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour des notifications:', error);
+    }
   };
 
+  const toggleNotifications = () => {
+    setShowNotifications(prev => !prev);
+    if (!showNotifications && unreadCount > 0) {
+      // Mark all notifications as read when the panel opens
+      markAllAsRead();
+    }
+  };
 
-
+  const handleNotificationRead = () => {
+    setUnreadCount(0); // Reset the unread count when a notification is read
+  };
 
   return (
     <header className="header">
@@ -68,32 +118,36 @@ function Header({ OpenSidebar }) {
         </MDBNavbar>
       </div>
 
-        {/* Notification Icon with toggle functionality */}
-        <div className="notification-icon" onClick={toggleNotifications}>
-          <BsFillBellFill className="icon" />
-          {showNotifications && (
-            <div className="notifications-popup">
-              <Notifications />
-            </div>
-          )}
-        </div>
-
-        {/* Profile Icon */}
-        <Link to="/Profile">
-          {loading ? (
-            <span>Loading...</span>
-          ) : profilePhoto ? (
-            <img
-              src={profilePhoto}
-              alt="Profile"
-              className="profile-icon"
+      {/* Notification Icon with toggle functionality */}
+      <div className="notification-icon" onClick={toggleNotifications}>
+        <BsFillBellFill className="icon_header" />
+        {unreadCount > 0 && <span className="cart-count">{unreadCount}</span>}
+        {showNotifications && (
+          <div className="notifications-popup">
+            <Notifications 
+              notifications={notifications} // Pass notifications to the Notifications component
+              onNotificationRead={handleNotificationRead} 
             />
-          ) : (
-            <BsPersonCircle className="icon" />
-          )}
-        </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Profile Icon */}
+      <Link to="/Profile">
+        {loading ? (
+          <span>Loading...</span>
+        ) : profilePhoto ? (
+          <img
+            src={profilePhoto}
+            alt="Profile"
+            className="profile-icon"
+          />
+        ) : (
+          <BsPersonCircle className="icon" />
+        )}
+      </Link>
     </header>
   );
 }
 
-export default Header;
+export default HeaderAdmin;

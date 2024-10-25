@@ -119,7 +119,7 @@ function Produits() {
     return (
         <main className='main-container'>
             <div className='main-title'>
-                <h3>Les Produits</h3>
+                <h1>Les Produits</h1>
                 {isAdmin && (
                     <MDBBtn onClick={handleShowAddProduct}>Ajouter un Produit</MDBBtn>
                 )}

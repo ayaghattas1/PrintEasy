@@ -48,25 +48,5 @@ const impressionSchema = mongoose.Schema({
 
 module.exports = mongoose.model("Impression", impressionSchema);
 
-// impressionSchema.pre('save', function(next) {
-//     if (this.isModified('nbPages') || this.isModified('nbFois') || this.isModified('couleur') || this.isModified('typeImpr')) {
-//         const totalPages = this.nbPages * this.nbFois;
-//         let prixUnitaire = 0;
-
-//         if (this.couleur === 'Couleurs' && this.typeImpr === 'Laser') {
-//             prixUnitaire = totalPages < 50 ? 120 : 90;
-//         } else if (this.couleur === 'Couleurs' && this.typeImpr === 'Impression Normale') {
-//             prixUnitaire = totalPages < 50 ? 100 : 80;
-//         } else if (this.couleur === 'Noir/Blanc' && this.typeImpr === 'Laser') {
-//             prixUnitaire = totalPages < 50 ? 70 : 50;
-//         } else if (this.couleur === 'Noir/Blanc' && this.typeImpr === 'Impression Normale') {
-//             prixUnitaire = totalPages < 50 ? 50 : 35;
-//         }
-
-//         this.prixunitaire = prixUnitaire;
-//         this.prixfinal = prixUnitaire * totalPages;
-//     }
-//     next();
-// });
 
 

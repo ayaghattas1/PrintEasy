@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   BsCart3, BsFillArchiveFill, BsMenuButtonWideFill, BsPrinter} from 'react-icons/bs';
 import { TbLogout2 } from "react-icons/tb";
-import { CgHome } from "react-icons/cg";
 import axios from 'axios';
 import { confirmAlert } from 'react-confirm-alert'; // Import the confirmation alert
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import styles
@@ -65,17 +64,12 @@ function SidebarAdmin({ openSidebarToggle }) {
       <ul className='sidebar-list'>
         <li className='sidebar-list-item'>
           <Link to="/AdminDash">
-            <CgHome className='icon' /> Accueil
+            <BsPrinter className='icon_header' /> Les Impressions
           </Link>
         </li>
         <li className='sidebar-list-item'>
           <Link to="/monPanier">
             <BsCart3 className='icon_header' /> Les paniers
-          </Link>
-        </li>
-        <li className='sidebar-list-item'>
-          <Link to="/commandes">
-            <BsPrinter className='icon_header' /> Les Impressions
           </Link>
         </li>
         <li className='sidebar-list-item'>
@@ -92,7 +86,7 @@ function SidebarAdmin({ openSidebarToggle }) {
         )}
         <li className='sidebar-list-item'>
           <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
-            <TbLogout2 className='icon' /> Logout
+            <TbLogout2 className='icon_header' /> Logout
           </span>
         </li>
       </ul>

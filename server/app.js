@@ -6,6 +6,7 @@ const userRouter=require("./routes/user")
 const impressionRouter=require("./routes/impression")
 const produitRouter=require("./routes/produit")
 const panierRouter=require("./routes/panier")
+const notificationRouter = require('./routes/notification');
 
 const Grid = require("gridfs-stream");
 const cors = require('cors');
@@ -62,6 +63,7 @@ app.use("/user", userRouter)
  app.use("/impression", impressionRouter)
 app.use("/produit", produitRouter)
 app.use("/panier", panierRouter)
+app.use("/notification", notificationRouter)
 
 const path = require('path');
 
