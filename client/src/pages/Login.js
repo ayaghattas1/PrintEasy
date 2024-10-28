@@ -48,9 +48,7 @@ export default function Login() {
       });
 
       if (response.status === 200) {
-
         localStorage.setItem('authToken', response.data.token);
-
         navigate('/dashboard');
       } else {
         setError(response.data.message || 'Échec de la connexion');
@@ -73,12 +71,25 @@ export default function Login() {
             alignItems: 'center',
           }}
         >
+          {/* Logo de l'application */}
+          <img
+            src="/logoo.png"
+            alt="PrintEasy Logo"
+            style={{
+              width: '150px',
+              height: 'auto',
+              marginBottom: '20px',
+            }}
+          />
+
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          
+          <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
             Connexion
           </Typography>
+
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -112,19 +123,27 @@ export default function Login() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ 
+                mt: 3, 
+                mb: 2, 
+                backgroundColor: '#007BFF', 
+                color: '#fff', 
+                padding: '10px', 
+                fontWeight: 'bold',
+                '&:hover': { backgroundColor: '#0056b3' },
+              }}
             >
               Connexion
             </Button>
             {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
             <Grid container>
               <Grid item xs>
-                <Link href="/forgotPassword" variant="body2">
+                <Link href="/forgotPassword" variant="body2" sx={{ color: '#007BFF' }}>
                   Mot de passe oublié ?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/signup" variant="body2">
+                <Link href="/signup" variant="body2" sx={{ color: '#007BFF' }}>
                   {"Pas de compte ? Inscrivez-vous"}
                 </Link>
               </Grid>

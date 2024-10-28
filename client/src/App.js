@@ -20,6 +20,7 @@ import DesignPerso from './pages/DesignPerso';
 import HeaderAdmin from './components/HeaderAdmin';
 import SidebarAdmin from './components/SidebarAdmin';
 import ProduitsAdmin from './pages/ProduitsAdmin';
+import PanierAdmin from './pages/PanierAdmin';
 import axios from 'axios';
 
 // Layout component with Header and Sidebar
@@ -86,6 +87,8 @@ function App() {
         <Route path="/produitsAdmin" element={<Layout><ProduitsAdmin /></Layout>} />
         <Route path="/Reports" element={<Layout><Reports /></Layout>} />
         <Route path="/MonPanier" element={<Layout><MonPanier /></Layout>} />
+        <Route path="/panierAdmin" element={<Layout><PanierAdmin /></Layout>} />
+
       </Routes>
     </Router>
   );

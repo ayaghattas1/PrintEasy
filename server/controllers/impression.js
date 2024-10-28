@@ -29,8 +29,8 @@ const getImpressions = async (req, res) => {
     }
 
     const impressions = await Impression.find(filter) // Appliquer le filtre
-      .populate('owner', 'photo')  // Assurez-vous que 'owner' est référencé correctement
-      .exec();
+    .populate('owner', 'firstname lastname email phone address photo')
+    .exec();
 
     res.json(impressions);
   } catch (error) {

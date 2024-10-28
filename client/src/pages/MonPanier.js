@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -21,7 +21,12 @@ const MonPanier = () => {
                 const response = await axios.get('http://localhost:5000/panier/getPanier', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setCartItems({ produits: response.data.produits, impressions: response.data.impressions });
+                console.log('Panier fetched:', response.data); // Ensure _id exists in the response
+                setCartItems({
+                    _id: response.data._id, // Assign the received _id here
+                    produits: response.data.produits,
+                    impressions: response.data.impressions
+                });
                 setLoading(false);
             } catch (err) {
                 console.error('Erreur lors de la récupération du panier', err);
@@ -31,6 +36,7 @@ const MonPanier = () => {
         };
         fetchCart();
     }, []);
+    
 
     // Calculez le total à chaque mise à jour du panier
     useEffect(() => {
@@ -160,6 +166,47 @@ const MonPanier = () => {
         }
     };
 
+    const confirmCart = async () => {
+        if (!cartItems._id) {
+            toast.error('Aucun panier trouvé à confirmer!');
+            return;
+        }
+    
+        try {
+            const token = localStorage.getItem('authToken');
+            const response = await axios.patch(`http://localhost:5000/panier/confirmPanier/${cartItems._id}`, {}, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            
+            console.log('Response from server:', response); // Debugging line
+    
+            if (response.status === 200) {
+                toast.success('Panier confirmé avec succès!', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            } else {
+                console.error('Unexpected response status:', response.status);
+            }
+        } catch (error) {
+            toast.error('Erreur lors de la confirmation du panier!', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            console.error('Erreur lors de la confirmation du panier', error);
+        }
+    };
+    
+    
+
     if (loading) {
         return <p>Chargement...</p>;
     }
@@ -206,10 +253,16 @@ const MonPanier = () => {
                         </div>
                     ))}
                     <h2>Total : {total} DT</h2>
+                    {/* Ajouter le bouton de confirmation */}
+                    <button onClick={confirmCart} style={{ marginTop: "16px", backgroundColor: "#42a5f5", color: "#fff" }}>Confirmer Panier</button>
+
+                    {/* Toast Container */}
+                    <ToastContainer />
                 </div>
             )}
         </div>
     );
+    
 };
 
 export default MonPanier;

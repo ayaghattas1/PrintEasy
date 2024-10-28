@@ -7,6 +7,8 @@ router.post('/addToPanier/:id',auth.loggedMiddleware, panierController.addToPani
 router.delete('/removeFromPanier/:id', auth.loggedMiddleware, panierController.removeFromPanier);
 router.patch('/updatePanier/:id', auth.loggedMiddleware, panierController.updatePanier);
 router.get('/getPanier', auth.loggedMiddleware, panierController.getPanier);
+router.get("/getConfirmed",auth.loggedMiddleware, panierController.getConfirmedPaniers);
+router.patch('/confirmPanier/:id', auth.loggedMiddleware, panierController.confirmPanier);
 
 
 module.exports = router;

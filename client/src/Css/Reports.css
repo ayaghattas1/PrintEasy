@@ -1,0 +1,48 @@
+.reports-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+    font-size: 2.5rem; /* Agrandir le titre principal */
+    color: #333;
+    margin-bottom: 40px;
+  }
+  
+  .charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Plus grand pour de meilleurs graphiques */
+    gap: 20px;
+  }
+  
+  .chart {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 25px; /* Plus de padding pour plus d'espace */
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h3 {
+    text-align: center;
+    font-size: 1.8rem; /* Taille plus grande pour les sous-titres */
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .revenue-amount {
+    font-size: 2rem; /* Agrandir l'affichage du revenu */
+    color: #00796b;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .total-revenue {
+    text-align: center;
+    padding: 25px;
+    background-color: #e0f7fa;
+    border-radius: 8px;
+  }
+  

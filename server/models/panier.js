@@ -28,7 +28,8 @@ const panierSchema = new mongoose.Schema({
         ref: 'Impression',
         required: true
     }
-  }]
+  }],
+  confirmed: { type: Boolean, default: false},
   
 }
 );

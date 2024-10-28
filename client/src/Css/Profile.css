@@ -1,0 +1,53 @@
+.profile-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .profile-section {
+    padding: 20px;
+    background-color: transparent;
+  }
+  
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+  }
+  
+  .profile-title {
+    color: #e0e0e0;
+    margin-bottom: 20px;
+  }
+  
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+  }
+  
+  .file-input {
+    margin-bottom: 20px;
+    color: #e0e0e0;
+  }
+  
+  .update-button {
+    background-color: #42a5f5;
+    color: #fff;
+    margin-top: 16px;
+    width: 100%;
+  }
+  
+  .profile-input .MuiInputBase-root {
+    background-color: #424242;
+    color: #e0e0e0;
+  }
+  
+  .profile-input .MuiInputLabel-root {
+    color: #e0e0e0;
+  }
+  

@@ -68,7 +68,7 @@ function SidebarAdmin({ openSidebarToggle }) {
           </Link>
         </li>
         <li className='sidebar-list-item'>
-          <Link to="/monPanier">
+          <Link to="/panierAdmin">
             <BsCart3 className='icon_header' /> Les paniers
           </Link>
         </li>

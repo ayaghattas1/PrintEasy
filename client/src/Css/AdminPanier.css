@@ -1,0 +1,51 @@
+.admin-panier {
+    padding: 20px;
+    background-color: #f4f4f4; /* Light background for the whole page */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  h1 {
+    color: #333;
+    text-align: center;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .user-photo {
+    width: 60px; /* Increased size for better visibility */
+    height: 60px; /* Increased size for better visibility */
+    border-radius: 50%; /* Makes the photo circular */
+    margin-right: 10px;
+    border: 2px solid #007BFF; /* Blue border around the photo */
+  }
+  
+  .panier-item {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    background-color: #fff; /* White background for contrast */
+    transition: box-shadow 0.3s; /* Smooth transition for hover effect */
+  }
+  
+  .panier-item:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Shadow effect on hover */
+  }
+  
+  .products-section, .impressions-section {
+    margin: 10px 0;
+  }
+  
+  .product-item, .impression-item {
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: #f9f9f9; /* Light background for items */
+    border-radius: 5px; /* Rounded corners for items */
+    border: 1px solid #e0e0e0; /* Light border for items */
+  }
+  

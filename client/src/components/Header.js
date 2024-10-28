@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BsFillBellFill, BsPersonCircle, BsJustify } from 'react-icons/bs';
+import { BsFillBellFill, BsPersonCircle } from 'react-icons/bs';
 import { MDBNavbar, MDBContainer, MDBInputGroup, MDBBtn } from 'mdb-react-ui-kit';
 import logo from '../assets/logoo.png';
 import { Link } from 'react-router-dom';
@@ -191,14 +191,12 @@ function Header({ OpenSidebar }) {
       <div className="header-left">
         <img src={logo} alt="Logo" className="logo" />
       </div>
-      <div className="menu-icon">
-        <BsJustify className="icon" onClick={OpenSidebar} />
-      </div>
+
       <div className="header-center">
         <MDBNavbar>
           <MDBContainer fluid>
             <MDBInputGroup tag="form" className="d-flex w-auto mb-3">
-              <input className="form-control" placeholder="Type query" aria-label="Search" type="Search" />
+              <input className="form-control" placeholder="Recherche" aria-label="Search" type="Search" />
               <MDBBtn outline>Chercher</MDBBtn>
             </MDBInputGroup>
           </MDBContainer>

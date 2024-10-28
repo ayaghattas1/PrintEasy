@@ -22,7 +22,6 @@ function ProduitsAdmin() {
         description: '',
         prix: '',
         image: '',
-        quantite: ''
     });
     const [selectedProduit, setSelectedProduit] = useState({});
 
@@ -68,7 +67,6 @@ function ProduitsAdmin() {
         formData.append('description', newProduit.description);
         formData.append('prix', newProduit.prix);
         formData.append('image', newProduit.image);  
-        formData.append('quantite', newProduit.quantite);
 
         try {
             const token = localStorage.getItem('authToken');  
@@ -96,7 +94,6 @@ function ProduitsAdmin() {
         if (typeof newProduit.image === 'object') {
             formData.append('image', newProduit.image);  // Only append if it's a file object
         }
-        formData.append('quantite', newProduit.quantite);
 
         try {
             const token = localStorage.getItem('authToken');  
@@ -136,7 +133,7 @@ function ProduitsAdmin() {
         <main className='main-container'>
             <div className='main-title'>
                 <h1>Les Produits</h1>
-                <MDBBtn onClick={handleShowAddProduct}>Ajouter un Produit</MDBBtn>
+                <MDBBtn size="lg" onClick={handleShowAddProduct}>Ajouter un Produit</MDBBtn>
             </div>
 
             <div className='main-cards'>
@@ -152,16 +149,16 @@ function ProduitsAdmin() {
                             <MDBCardText className='description-text'>{produit.description}</MDBCardText>
                             <MDBCardText>Prix: {produit.prix} DT</MDBCardText>
                             <div className="card-actions">
-                                <MDBBtn onClick={() => handleShowProductDetails(produit)}>
-                                    <BsFillArchiveFill className='card_icon'/> Détails
-                                </MDBBtn>
-                                <MDBBtn onClick={() => handleShowUpdateProduct(produit)}>
-                                    <BsFillPencilFill className='card_icon'/> 
-                                </MDBBtn>
-                                <MDBBtn onClick={() => handleDeleteProduct(produit._id)}>
-                                    <BsFillTrashFill className='card_icon'/> 
-                                </MDBBtn>
-                            </div>
+                    <MDBBtn onClick={() => handleShowProductDetails(produit)}>
+                        <BsFillArchiveFill className='card_icon'/> Détails
+                    </MDBBtn>
+                    <MDBBtn className="btn-edit"  color="success" onClick={() => handleShowUpdateProduct(produit)}>
+                        <BsFillPencilFill className='card_icon'/> 
+                    </MDBBtn>
+                    <MDBBtn className="btn-delete" onClick={() => handleDeleteProduct(produit._id)}>
+                        <BsFillTrashFill className='card_icon'/> 
+                    </MDBBtn>
+                </div>
                         </MDBCardBody>
                     </MDBCard>
                 ))}
@@ -217,17 +214,6 @@ function ProduitsAdmin() {
                                 name="image"
                                 onChange={handleFileChange}
                                 required
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="formQuantite">
-                            <Form.Label>Quantité</Form.Label>
-                            <Form.Control
-                                type="number"
-                                placeholder="Entrez la quantité"
-                                name="quantite"
-                                value={newProduit.quantite}
-                                onChange={handleChange}
                             />
                         </Form.Group>
 
@@ -290,16 +276,6 @@ function ProduitsAdmin() {
                             />
                         </Form.Group>
 
-                        <Form.Group controlId="formQuantite">
-                            <Form.Label>Quantité</Form.Label>
-                            <Form.Control
-                                type="number"
-                                placeholder="Entrez la quantité"
-                                name="quantite"
-                                value={newProduit.quantite}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
 
                         <Button variant="primary" type="submit" className="mt-3">
                             Modifier
@@ -317,7 +293,6 @@ function ProduitsAdmin() {
                     <p><strong>Nom: </strong>{selectedProduit.nom}</p>
                     <p><strong>Description: </strong>{selectedProduit.description}</p>
                     <p><strong>Prix: </strong>{selectedProduit.prix} DT</p>
-                    <p><strong>Quantité: </strong>{selectedProduit.quantite}</p>
                     <img src={`http://localhost:5000${selectedProduit.image}`} alt={selectedProduit.nom} style={{ width: '100%' }} />
                 </Modal.Body>
             </Modal>

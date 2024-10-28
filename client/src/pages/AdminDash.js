@@ -37,12 +37,12 @@ const StyledSelect = styled(Select)(({ theme }) => ({
 }));
 
 const StyledPagination = styled(TablePagination)(({ theme }) => ({
-  color: '#fff',
+  color: '#000',
   '& .MuiTablePagination-selectIcon': {
-    color: '#fff',
+    color: '#000',
   },
   '& .MuiTablePagination-actions button': {
-    color: '#fff',
+    color: '#000',
   },
 }));
 
@@ -263,25 +263,25 @@ const AdminDash = () => {
                     style={{ cursor: 'pointer' }}
                   />
                 </StyledTableCell>
-                <StyledTableCell>{moment(impression.createdAt).format('YYYY-MM-DD')}</StyledTableCell>
-                <StyledTableCell>{impression.description}</StyledTableCell>
-                <StyledTableCell>{impression.taille}</StyledTableCell>
-                <StyledTableCell>{impression.couleur}</StyledTableCell>
-                <StyledTableCell>{impression.typeImpr}</StyledTableCell>
-                <StyledTableCell>{impression.nbPages}</StyledTableCell>
-                <StyledTableCell>{impression.nbFois}</StyledTableCell>
-                <StyledTableCell>{impression.prixfinal}DT</StyledTableCell>
-                <StyledTableCell>{moment(impression.date_maximale).format('YYYY-MM-DD')}</StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }} >{moment(impression.createdAt).format('YYYY-MM-DD')}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{impression.description}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{impression.taille}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{impression.couleur}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{impression.typeImpr}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{impression.nbPages}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{impression.nbFois}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{impression.prixfinal}DT</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{moment(impression.date_maximale).format('YYYY-MM-DD')}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>
                   {impression.file.map((file, index) => (
                     <div key={index}>
                       <FileIcon fileName={file} />
                     </div>
                   ))}
                 </StyledTableCell>
-                <StyledTableCell>{impression.livraison}</StyledTableCell>
-                <StyledTableCell>{renderEtatChip(impression.etat)}</StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{impression.livraison}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>{renderEtatChip(impression.etat)}</StyledTableCell>
+                <StyledTableCell style={{ color: '#333' }}>
                   <Button variant="contained" color="primary" onClick={() => handleDetailsClick(impression)}>
                     Détails
                   </Button>
@@ -291,7 +291,7 @@ const AdminDash = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <StyledPagination
+      <StyledPagination style={{ color: '#333' }}
         rowsPerPageOptions={[7, 14, 21]}
         component="div"
         count={impressions.length}
@@ -301,31 +301,69 @@ const AdminDash = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>Profil du Client</DialogTitle>
-        <DialogContent>
-        {selectedOwner && (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+  <DialogTitle style={{ backgroundColor: '#27293d', color: '#fff', textAlign: 'center' }}>
+    Profil du Client
+  </DialogTitle>
+  
+  <DialogContent style={{ padding: '20px', backgroundColor: '#f5f5f5' }}>
+    {selectedOwner && (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* Avatar avec une bordure et une ombre */}
         <Avatar
-            src={`http://localhost:5000/uploads/${selectedOwner.photo}`}
-            alt="Profile"
-            style={{ width: 100, height: 100, marginRight: 20 }}
+          src={`http://localhost:5000/uploads/${selectedOwner.photo}`}
+          alt="Profile"
+          style={{
+            width: 120,
+            height: 120,
+            marginBottom: 20,
+            border: '3px solid #007BFF',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
+          }}
         />
-        <div>
-            <Typography variant="h6">{selectedOwner.firstname} {selectedOwner.lastname}</Typography>
-            <Typography variant="body1">Email: {selectedOwner.email}</Typography>
-            <Typography variant="body1">Téléphone: {selectedOwner.phone}</Typography>
-            <Typography variant="body1">Adresse: {selectedOwner.address}</Typography>
+
+        {/* Nom complet en gras et titre */}
+        <Typography variant="h5" style={{ fontWeight: 'bold', marginBottom: 10 }}>
+          {selectedOwner.firstname} {selectedOwner.lastname}
+        </Typography>
+
+        {/* Informations personnelles dans une grille */}
+        <div style={{ display: 'grid', rowGap: '10px', width: '100%', maxWidth: '400px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="body1" color="textSecondary">Email :</Typography>
+            <Typography variant="body1">{selectedOwner.email}</Typography>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="body1" color="textSecondary">Téléphone :</Typography>
+            <Typography variant="body1">{selectedOwner.phone}</Typography>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="body1" color="textSecondary">Adresse :</Typography>
+            <Typography variant="body1">{selectedOwner.address}</Typography>
+          </div>
         </div>
-    </div>
-)}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Fermer
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </div>
+    )}
+  </DialogContent>
+  
+  <DialogActions style={{ padding: '16px', backgroundColor: '#f5f5f5', justifyContent: 'center' }}>
+    <Button
+      onClick={handleClose}
+      style={{
+        backgroundColor: '#007BFF',
+        color: '#fff',
+        padding: '10px 20px',
+        borderRadius: '5px',
+        fontWeight: 'bold',
+      }}
+    >
+      Fermer
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
 
 <Dialog 

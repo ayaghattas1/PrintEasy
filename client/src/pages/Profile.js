@@ -140,6 +140,7 @@ const Profile = () => {
       </form>
       
       <form onSubmit={handleUpdateUser}>
+        {/** Email field (read-only) **/}
         <TextField
           label="Email"
           variant="outlined"
@@ -148,12 +149,13 @@ const Profile = () => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
           InputProps={{
-            style: { backgroundColor: '#424242', color: '#e0e0e0' },  
-            readOnly: true
+            readOnly: true,
+            style: { backgroundColor: '#f5f5f5', color: '#333' },
           }}
+          InputLabelProps={{ style: { color: '#333' } }}
         />
+        {/** Other fields **/}
         <TextField
           label="Prénom"
           variant="outlined"
@@ -162,10 +164,8 @@ const Profile = () => {
           name="lastname"
           value={formData.lastname}
           onChange={handleChange}
-          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
-          InputProps={{
-            style: { backgroundColor: '#424242', color: '#e0e0e0' }, 
-          }}
+          InputProps={{ style: { backgroundColor: '#fff', color: '#333' } }}
+          InputLabelProps={{ style: { color: '#333' } }}
         />
         <TextField
           label="Nom"
@@ -175,10 +175,8 @@ const Profile = () => {
           name="firstname"
           value={formData.firstname}
           onChange={handleChange}
-          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
-          InputProps={{
-            style: { backgroundColor: '#424242', color: '#e0e0e0' },  
-          }}
+          InputProps={{ style: { backgroundColor: '#fff', color: '#333' } }}
+          InputLabelProps={{ style: { color: '#333' } }}
         />
         <TextField
           label="Téléphone"
@@ -188,10 +186,8 @@ const Profile = () => {
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
-          InputProps={{
-            style: { backgroundColor: '#424242', color: '#e0e0e0' },  
-          }}
+          InputProps={{ style: { backgroundColor: '#fff', color: '#333' } }}
+          InputLabelProps={{ style: { color: '#333' } }}
         />
         <TextField
           label="Adresse"
@@ -201,16 +197,15 @@ const Profile = () => {
           name="address"
           value={formData.address}
           onChange={handleChange}
-          InputLabelProps={{ style: { color: '#e0e0e0' } }}  
-          InputProps={{
-            style: { backgroundColor: '#424242', color: '#e0e0e0' },  
-          }}
+          InputProps={{ style: { backgroundColor: '#fff', color: '#333' } }}
+          InputLabelProps={{ style: { color: '#333' } }}
         />
         
         <Button
           type="submit"
           variant="contained"
-          style={{ marginTop: '16px', backgroundColor: '#42a5f5', color: '#fff' }}
+          style={{ marginTop: '16px', backgroundColor: '#42a5f5', color: '#fff', padding: '12px 0', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}
+          fullWidth
         >
           Mettre à jour
         </Button>

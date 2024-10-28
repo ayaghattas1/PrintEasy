@@ -14,7 +14,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 
-
 const defaultTheme = createTheme();
 
 export default function SignUp() {
@@ -119,13 +118,13 @@ export default function SignUp() {
       const result = await response.json();
 
       if (response.ok) {
-        console.log('Signup successful:', result);
+        console.log('Inscription réussie:', result);
         navigate('/');
       } else {
-        console.error('Signup error:', result);
+        console.error('Erreur d\'inscription:', result);
       }
     } catch (error) {
-      console.error('Network error:', error);
+      console.error('Erreur réseau:', error);
     }
   };
 
@@ -141,12 +140,25 @@ export default function SignUp() {
             alignItems: 'center',
           }}
         >
+          {/* Logo PrintEasy */}
+          <img
+            src="/logoo.png"
+            alt="PrintEasy Logo"
+            style={{
+              width: '150px',
+              height: 'auto',
+              marginBottom: '20px',
+            }}
+          />
+
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            SignUp
+
+          <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
+            Inscription
           </Typography>
+
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -224,18 +236,28 @@ export default function SignUp() {
                 />
               </Grid>
             </Grid>
+
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ 
+                mt: 3, 
+                mb: 2, 
+                backgroundColor: '#007BFF', 
+                color: '#fff', 
+                padding: '10px', 
+                fontWeight: 'bold',
+                '&:hover': { backgroundColor: '#0056b3' },
+              }}
             >
-              Sign Up
+              S'inscrire
             </Button>
+
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/" variant="body2">
-                  Vous avez déjà un compte ? LogIn
+                <Link href="/" variant="body2" sx={{ color: '#007BFF' }}>
+                  Vous avez déjà un compte ? Connexion
                 </Link>
               </Grid>
             </Grid>
